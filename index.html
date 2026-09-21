@@ -3,106 +3,251 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cubito - Mascota habladora</title>
+<title>Cubito - Mascota educativa</title>
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:linear-gradient(160deg,#f7f1ff,#e9f7ff);display:flex;justify-content:center;align-items:center;padding:18px;color:#25233a}.app{width:min(430px,100%);background:#fff;border-radius:28px;padding:22px;box-shadow:0 14px 40px rgba(40,30,70,.15);text-align:center}h1{margin:0 0 4px;font-size:28px}.sub{margin:0 0 18px;color:#77738a}.pet{width:190px;height:190px;margin:0 auto 16px;border-radius:38px;background:#6d5dfc;display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:inset 0 -12px 0 rgba(0,0,0,.08);transition:.2s}.pet.happy{transform:scale(1.05) rotate(-1deg)}.eyes{display:flex;gap:48px;margin-bottom:20px}.eye{width:25px;height:35px;border-radius:50%;background:#fff;position:relative}.eye:after{content:"";position:absolute;width:9px;height:13px;background:#25233a;border-radius:50%;left:8px;top:10px}.mouth{width:52px;height:22px;border-bottom:6px solid #fff;border-radius:0 0 50% 50%}.bubble{min-height:65px;background:#f3f2fa;border-radius:18px;padding:14px;font-size:16px;line-height:1.35;margin-bottom:15px}.buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}button{border:0;border-radius:15px;padding:14px 10px;font-size:16px;font-weight:700;background:#eeeaff;color:#312a73;cursor:pointer;min-height:52px}button:active{transform:scale(.97)}.talk{grid-column:1/-1;background:#6d5dfc;color:#fff;font-size:18px}.score{margin-top:15px;font-weight:700;color:#6157a8}.tiny{margin-top:10px;font-size:12px;color:#92909e}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:linear-gradient(160deg,#f7f1ff,#e9f7ff);display:flex;justify-content:center;align-items:center;padding:18px;color:#25233a}
+.app{width:min(430px,100%);background:#fff;border-radius:28px;padding:22px;box-shadow:0 14px 40px rgba(40,30,70,.15);text-align:center}
+h1{margin:0 0 4px;font-size:28px}.sub{margin:0 0 18px;color:#77738a}
+.pet{width:190px;height:190px;margin:0 auto 16px;border-radius:38px;background:#6d5dfc;display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:inset 0 -12px 0 rgba(0,0,0,.08);transition:.2s}
+.pet.happy{transform:scale(1.05) rotate(-1deg)}.pet.listening{box-shadow:0 0 0 8px rgba(109,93,252,.18),inset 0 -12px 0 rgba(0,0,0,.08)}
+.eyes{display:flex;gap:48px;margin-bottom:20px}.eye{width:25px;height:35px;border-radius:50%;background:#fff;position:relative}.eye:after{content:"";position:absolute;width:9px;height:13px;background:#25233a;border-radius:50%;left:8px;top:10px}
+.mouth{width:52px;height:22px;border-bottom:6px solid #fff;border-radius:0 0 50% 50%}
+.status{font-size:14px;font-weight:700;color:#6157a8;min-height:20px;margin-bottom:8px}
+.buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{border:0;border-radius:15px;padding:14px 10px;font-size:16px;font-weight:700;background:#eeeaff;color:#312a73;cursor:pointer;min-height:52px}
+button:active{transform:scale(.97)}.talk{grid-column:1/-1;background:#6d5dfc;color:#fff}.reset{background:#f4f1f7;color:#666;font-size:13px}
+.score{margin-top:15px;font-weight:700;color:#6157a8}.tiny{margin-top:10px;font-size:12px;color:#92909e}
 </style>
 </head>
 <body>
 <div class="app">
 <h1>🤖 Cubito</h1>
-<p class="sub">Háblame y aprendemos juntos</p>
+<p class="sub">Tu pequeña mascota para aprender</p>
 
 <div class="pet" id="pet">
 <div class="eyes"><div class="eye"></div><div class="eye"></div></div>
 <div class="mouth"></div>
 </div>
 
-<div class="bubble" id="bubble" aria-live="polite">Presiona el micrófono y háblame. 🎤</div>
+<div class="status" id="status">Preparando mis oídos... 🎤</div>
 
 <div class="buttons">
-<button class="talk" id="talkBtn" onclick="escuchar()">🎤 HABLAR CON CUBITO</button>
-<button onclick="saludar()">👋 Saludar</button>
-<button onclick="pregunta()">🧠 Pregúntame</button>
-<button onclick="matematicas()">🔢 Matemáticas</button>
-<button onclick="adivinanza()">🧩 Adivinanza</button>
+<button class="talk" id="talkBtn" onclick="toggleEscucha()">🎤 ACTIVAR ESCUCHA</button>
+<button onclick="decirAyuda()">🧠 ¿Qué sabes?</button>
+<button onclick="preguntaJuego()">🎮 Jugar</button>
+<button onclick="decir("''"'"''")">''</button>
 </div>
 
 <div class="score" id="score">⭐ Puntos: 0</div>
-<div class="tiny">Primera versión: respuestas programadas, sin IA.</div>
+<div class="tiny">La información está programada. No usa IA ni API.</div>
 </div>
 
 <script>
-let puntos=0, esperando="", reconocimiento=null;
-const bubble=document.getElementById("bubble"), pet=document.getElementById("pet"), score=document.getElementById("score"), talkBtn=document.getElementById("talkBtn");
+let puntos=0;
+let nombre=localStorage.getItem("cubito_nombre")||"";
+let reconocimiento=null;
+let escuchando=false;
+let hablando=false;
+let esperandoNombre=false;
+let esperandoSuma=false;
+let esperandoAnimal=false;
+let ultimaRespuesta="";
+const pet=document.getElementById("pet");
+const statusEl=document.getElementById("status");
+const talkBtn=document.getElementById("talkBtn");
+const score=document.getElementById("score");
 
-function hablar(t){
- bubble.textContent=t;
+function normalizar(t){
+ return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+}
+function animar(){
+ pet.classList.remove("happy"); void pet.offsetWidth; pet.classList.add("happy");
+}
+function hablar(texto, despues){
+ hablando=true;
+ ultimaRespuesta=texto;
+ statusEl.textContent="🔊 Hablando...";
  if("speechSynthesis" in window){
    speechSynthesis.cancel();
-   const v=new SpeechSynthesisUtterance(t);
-   v.lang="es-MX"; v.rate=.95; v.pitch=1.08;
+   const v=new SpeechSynthesisUtterance(texto);
+   v.lang="es-MX"; v.rate=.94; v.pitch=1.08;
+   v.onend=()=>{hablando=false; statusEl.textContent=escuchando?"🎤 Te escucho...":"Pulsa activar escucha"; if(despues) despues();};
    speechSynthesis.speak(v);
+ }else{
+   hablando=false;
+   if(despues) despues();
+ }
+ animar();
+}
+function decir(texto){hablar(texto,()=>{});}
+function sumarPunto(){puntos++;score.textContent="⭐ Puntos: "+puntos;animar();}
+
+function iniciar(){
+ if(nombre){
+   hablar("¡Hola de nuevo, "+nombre+"! Soy Cubito. Puedo enseñarte matemáticas, animales, espacio, ciencia, cuerpo humano, naturaleza, geografía, letras, colores y muchas curiosidades. También puedo hacerte preguntas y jugar contigo. Cuando quieras, háblame.",()=>iniciarEscucha());
+ }else{
+   hablar("¡Hola! Soy Cubito, tu mascota para aprender. Puedo responder preguntas, enseñarte muchas cosas y jugar contigo. Primero quiero conocerte. ¿Cómo te llamas?",()=>{
+     esperandoNombre=true;
+     iniciarEscucha();
+   });
  }
 }
-function animar(){pet.classList.remove("happy");void pet.offsetWidth;pet.classList.add("happy")}
-function decir(t){hablar(t);animar()}
-function normalizar(t){return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
 
-function escuchar(){
+function crearReconocimiento(){
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SR){decir("Tu navegador no permite reconocimiento de voz en esta prueba. Prueba con Chrome.");return}
- if(reconocimiento){reconocimiento.stop();return}
- reconocimiento=new SR();
- reconocimiento.lang="es-MX";
- reconocimiento.interimResults=false;
- reconocimiento.maxAlternatives=1;
- talkBtn.textContent="🔴 ESCUCHANDO...";
- reconocimiento.onresult=e=>{
+ if(!SR){
+   statusEl.textContent="⚠️ Tu navegador no permite reconocimiento de voz";
+   talkBtn.textContent="🎤 NAVEGADOR NO COMPATIBLE";
+   return null;
+ }
+ const r=new SR();
+ r.lang="es-MX";
+ r.interimResults=false;
+ r.continuous=false;
+ r.maxAlternatives=1;
+ r.onstart=()=>{
+   escuchando=true; pet.classList.add("listening"); statusEl.textContent="🎤 Te escucho..."; talkBtn.textContent="🔴 ESCUCHANDO";
+ };
+ r.onresult=e=>{
    const texto=e.results[0][0].transcript;
    procesar(texto);
  };
- reconocimiento.onerror=e=>{
-   decir("No pude escucharte. Revisa el permiso del micrófono e inténtalo otra vez.");
+ r.onerror=e=>{
+   escuchando=false; pet.classList.remove("listening");
+   if(e.error==="not-allowed"||e.error==="service-not-allowed"){
+     statusEl.textContent="🎤 Necesito permiso para usar el micrófono";
+     hablar("Necesito permiso para usar el micrófono. Revisa el permiso de este sitio en tu navegador.");
+   }else{
+     statusEl.textContent="No te escuché. Intentaré otra vez...";
+   }
  };
- reconocimiento.onend=()=>{
-   talkBtn.textContent="🎤 HABLAR CON CUBITO";
-   reconocimiento=null;
+ r.onend=()=>{
+   escuchando=false; pet.classList.remove("listening"); reconocimiento=null;
+   if(!hablando && document.visibilityState==="visible") setTimeout(()=>{if(!hablando && !escuchando && autoEscucha) iniciarEscucha();},500);
  };
- reconocimiento.start();
+ return r;
+}
+
+let autoEscucha=true;
+function iniciarEscucha(){
+ if(hablando||escuchando||!autoEscucha)return;
+ reconocimiento=crearReconocimiento();
+ if(reconocimiento){
+   try{reconocimiento.start();}catch(e){}
+ }
+}
+function toggleEscucha(){
+ autoEscucha=!autoEscucha;
+ if(autoEscucha){
+   hablar("¡Listo! Ahora te escucho automáticamente.",()=>iniciarEscucha());
+ }else{
+   if(reconocimiento){try{reconocimiento.stop();}catch(e){}}
+   statusEl.textContent="Escucha pausada";
+   talkBtn.textContent="🎤 ACTIVAR ESCUCHA";
+ }
 }
 
 function procesar(texto){
  const t=normalizar(texto);
- if(esperando==="suma"){
-   if(t.includes("5")||t.includes("cinco")){puntos++;score.textContent="⭐ Puntos: "+puntos;decir("¡Correcto! Dos más tres son cinco. 🎉")}
-   else decir("Casi. La respuesta es cinco.");
-   esperando=""; return;
+ if(esperandoNombre){
+   const n=texto.trim().replace(/\s+/g," ");
+   if(n.length>0 && n.length<40){
+     nombre=n.split(" ").map(x=>x.charAt(0).toUpperCase()+x.slice(1).toLowerCase()).join(" ");
+     localStorage.setItem("cubito_nombre",nombre);
+     esperandoNombre=false;
+     hablar("¡Mucho gusto, "+nombre+"! Ya recordaré tu nombre en este teléfono. ¿Qué quieres aprender?",()=>iniciarEscucha());
+   }
+   return;
  }
- if(esperando==="animal"){
-   if(t.includes("gato")){puntos++;score.textContent="⭐ Puntos: "+puntos;decir("¡Muy bien! El gato dice miau. 🐱")}
-   else decir("La respuesta es gato. 🐱");
-   esperando=""; return;
+ if(esperandoSuma){
+   if(t.includes("5")||t.includes("cinco")){sumarPunto();esperandoSuma=false;hablar("¡Correcto! Dos más tres son cinco. 🎉",()=>iniciarEscucha());}
+   else{esperandoSuma=false;hablar("Casi. La respuesta correcta es cinco. ¡Vamos con otra!",()=>iniciarEscucha());}
+   return;
  }
- if(t.includes("hola")||t.includes("buenas")){decir("¡Hola! Qué gusto escucharte. 😊");return}
- if(t.includes("como estas")||t.includes("cómo estás")){decir("¡Estoy muy bien! Listo para aprender contigo.");return}
- if(t.includes("quien eres")||t.includes("quién eres")){decir("Soy Cubito, tu pequeña mascota para aprender.");return}
- if(t.includes("que animal")||t.includes("qué animal")){preguntaAnimal();return}
- if(t.includes("matematic")||t.includes("suma")||t.includes("cuanto es")||t.includes("cuánto es")){matematicas();return}
- if(t.includes("chiste")){decir("¿Qué le dijo un cero a un ocho? ¡Bonito cinturón! 😂");return}
- if(t.includes("color")){decir("Una banana madura normalmente es amarilla. 💛");return}
- decir("Todavía no sé responder eso. Puedes preguntarme por animales, colores, matemáticas o decir hola.");
+ if(esperandoAnimal){
+   if(t.includes("gato")){sumarPunto();esperandoAnimal=false;hablar("¡Correcto! El gato dice miau. 🐱",()=>iniciarEscucha());}
+   else{esperandoAnimal=false;hablar("La respuesta era gato. 🐱 ¡No pasa nada, seguimos aprendiendo!",()=>iniciarEscucha());}
+   return;
+ }
+
+ if(t.includes("mi nombre")||t.includes("como me llamo")||t.includes("recuerdas mi nombre")){
+   if(nombre) decir("Te llamas "+nombre+". ¡Claro que me acuerdo!");
+   else hablar("Todavía no me has dicho tu nombre. ¿Cómo te llamas?",()=>{esperandoNombre=true;iniciarEscucha();});
+   return;
+ }
+ if(t==="hola"||t.includes("hola cubito")||t.includes("buenas")){decir("¡Hola"+(nombre?", "+nombre:"")+"! ¿Qué quieres aprender?");return;}
+ if(t.includes("como estas")){decir("¡Estoy muy bien y listo para aprender contigo!");return;}
+ if(t.includes("quien eres")||t.includes("que eres")){decir("Soy Cubito, una pequeña mascota educativa. Puedo enseñarte cosas, hacerte preguntas y jugar contigo.");return;}
+ if(t.includes("que sabes")||t.includes("que puedes hacer")||t.includes("ayuda")){decirAyuda();return;}
+ if(t.includes("chiste")){decir("¿Qué le dijo un cero a un ocho? ¡Bonito cinturón! 😂");return;}
+
+ if(t.includes("que animal")||t.includes("animal dice miau")){esperandoAnimal=true;hablar("¿Qué animal dice miau?",()=>iniciarEscucha());return;}
+ if(t.includes("cuanto es")||t.includes("suma")||t.includes("matematic")){esperandoSuma=true;hablar("Vamos con una suma. ¿Cuánto es dos más tres?",()=>iniciarEscucha());return;}
+
+ const respuestas=[
+  [/perro|perros/,"El perro es un mamífero doméstico. Tiene un olfato muy desarrollado y existen muchísimas razas."],
+  [/gato|gatos/,"El gato es un mamífero. Puede dormir muchas horas al día y tiene un oído y una vista muy sensibles."],
+  [/elefante/,"El elefante es el animal terrestre más grande que existe actualmente. Tiene una trompa muy útil para respirar, oler, tocar y recoger alimentos."],
+  [/delfin/,"Los delfines son mamíferos marinos. Respiran aire y utilizan sonidos para comunicarse y orientarse."],
+  [/tiburon/,"Los tiburones son peces. Respiran mediante branquias y existen cientos de especies diferentes."],
+  [/mariposa/,"Las mariposas son insectos. Pasan por una transformación llamada metamorfosis: huevo, oruga, crisálida y adulto."],
+  [/color.*cielo|cielo.*color/,"En un día despejado, el cielo normalmente se ve azul porque la atmósfera dispersa más la luz azul del Sol."],
+  [/banana|platano|plátano/,"Una banana madura normalmente es amarilla y contiene nutrientes como carbohidratos, fibra y potasio."],
+  [/rojo|azul|verde|amarillo|morado|rosa/,"Los colores pueden combinarse de muchas maneras. Por ejemplo, azul y amarillo producen verde cuando hablamos de pintura."],
+  [/planeta|tierra/,"La Tierra es el planeta donde vivimos. Tiene agua líquida en su superficie y una atmósfera que permite la vida tal como la conocemos."],
+  [/sol/,"El Sol es una estrella. Es la principal fuente de luz y energía para la Tierra."],
+  [/luna/,"La Luna es el satélite natural de la Tierra. No produce su propia luz visible; refleja la luz del Sol."],
+  [/estrella|estrellas/,"Las estrellas son enormes esferas de gas muy caliente. El Sol también es una estrella."],
+  [/marte/,"Marte es el cuarto planeta desde el Sol. Se le conoce como el planeta rojo por el aspecto de su superficie."],
+  [/jupiter/,"Júpiter es el planeta más grande del sistema solar y es un gigante gaseoso."],
+  [/saturno/,"Saturno es un gigante gaseoso famoso por sus grandes anillos formados principalmente por hielo y roca."],
+  [/espacio|universo/,"El universo contiene galaxias, estrellas, planetas, nebulosas y muchísimos otros objetos. Todavía hay muchísimo que aprender sobre él."],
+  [/cuerpo humano|cuerpo/,"El cuerpo humano tiene muchos sistemas que trabajan juntos. Por ejemplo, el corazón impulsa la sangre y los pulmones ayudan a intercambiar oxígeno y dióxido de carbono."],
+  [/corazon/,"El corazón es un músculo que bombea sangre por todo el cuerpo."],
+  [/cerebro/,"El cerebro forma parte del sistema nervioso y participa en el pensamiento, la memoria, los sentidos y el control de muchas funciones del cuerpo."],
+  [/pulmon|pulmones/,"Los pulmones ayudan a introducir oxígeno en la sangre y a eliminar dióxido de carbono cuando respiramos."],
+  [/hueso|huesos/,"Los huesos dan soporte al cuerpo, protegen órganos y ayudan al movimiento junto con los músculos."],
+  [/agua/,"El agua es esencial para la vida. En la Tierra puede encontrarse como sólido, líquido y gas."],
+  [/planta|plantas/,"Las plantas pueden fabricar su propio alimento mediante la fotosíntesis usando luz, agua y dióxido de carbono."],
+  [/fotosintesis/,"La fotosíntesis es el proceso mediante el cual las plantas utilizan la luz para producir alimento a partir de agua y dióxido de carbono."],
+  [/volcan/,"Un volcán es una abertura de la corteza terrestre por donde pueden salir materiales calientes, como lava, gases y ceniza."],
+  [/dinosaurio|dinosaurios/,"Los dinosaurios vivieron durante millones de años y desaparecieron al final del período Cretácico, hace unos 66 millones de años."],
+  [/tierra.*sol|sol.*tierra/,"La Tierra gira alrededor del Sol y tarda aproximadamente un año en completar una vuelta."],
+  [/dia|día/,"Un día solar dura aproximadamente 24 horas."],
+  [/semana/,"Una semana tiene siete días."],
+  [/mes/,"Un año tiene doce meses."],
+  [/mexico/,"México está en América del Norte. Su capital es Ciudad de México y tiene una gran diversidad de culturas, paisajes y ecosistemas."],
+  [/capital.*mexico/,"La capital de México es Ciudad de México."],
+  [/ingles|ingles/,"Puedo ayudarte con palabras básicas en inglés. Por ejemplo, hello significa hola y thank you significa gracias."],
+  [/letra a/,"La A es una vocal. Una palabra que empieza con A es avión."],
+  [/letra b/,"La B es una consonante. Una palabra que empieza con B es barco."],
+  [/letra c/,"La C es una consonante. Una palabra que empieza con C es casa."],
+  [/gravedad/,"La gravedad es una fuerza que atrae los objetos con masa. Es la razón por la que las cosas caen hacia el suelo."],
+  [/electricidad/,"La electricidad es una forma de energía asociada al movimiento o acumulación de cargas eléctricas."],
+  [/robot/,"Un robot es una máquina que puede realizar tareas de manera automática o controlada por un programa."],
+  [/computadora|ordenador/,"Una computadora es una máquina electrónica capaz de procesar información siguiendo instrucciones llamadas programas."]
+ ];
+ for(const [rx,res] of respuestas){
+   if(rx.test(t)){decir(res);return;}
+ }
+ decir("Todavía no conozco esa respuesta. Puedes preguntarme sobre animales, espacio, ciencia, cuerpo humano, naturaleza, matemáticas, letras, colores, geografía y muchas curiosidades.");
 }
 
-function saludar(){decir("¡Hola! Me da mucho gusto jugar contigo. Háblame para hacerme una pregunta.")}
-function pregunta(){decir("Puedes preguntarme qué animal dice miau, cuánto es dos más tres o de qué color es una banana.")}
-function preguntaAnimal(){esperando="animal";decir("¿Qué animal dice miau?")}
-function matematicas(){esperando="suma";decir("¿Cuánto es dos más tres?")}
-function adivinanza(){decir("Tengo cuatro patas y digo guau. ¿Qué soy?")}
-
-if(!("SpeechRecognition" in window)&&!("webkitSpeechRecognition" in window)){
- talkBtn.textContent="🎤 MICRÓFONO (PRUEBA EN CHROME)";
+function decirAyuda(){
+ decir("Puedo hablar contigo, recordar tu nombre, hacer preguntas de matemáticas, animales y adivinanzas, y explicarte cosas sobre animales, plantas, espacio, cuerpo humano, ciencia, naturaleza, colores, letras, geografía y tecnología.");
 }
+function preguntaJuego(){
+ const juegos=[
+  ()=>{esperandoAnimal=true;hablar("Primera pregunta: ¿qué animal dice miau?",()=>iniciarEscucha());},
+  ()=>{esperandoSuma=true;hablar("Vamos con matemáticas. ¿Cuánto es dos más tres?",()=>iniciarEscucha());}
+ ];
+ juegos[Math.floor(Math.random()*juegos.length)]();
+}
+
+window.addEventListener("load",()=>{
+ setTimeout(iniciar,700);
+});
 </script>
 </body>
 </html>
