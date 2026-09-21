@@ -143,6 +143,29 @@ button{font:inherit;border:0;cursor:pointer}
 .option-btn.wrong-choice{outline:5px solid #ff8f9a;background:#fff0f2}
 @media(max-width:480px){.option-grid{gap:10px}.option-btn{min-height:105px;font-size:20px;border-radius:22px}.option-btn .opt-emoji{font-size:40px}}
 
+
+.listen-small{display:inline-flex;align-items:center;justify-content:center;gap:5px;margin-top:8px;padding:7px 10px;border-radius:13px;background:#e9edff;color:var(--ink);font-size:13px;font-weight:900;box-shadow:0 4px 12px rgba(70,65,120,.08)}
+.listen-small:active{transform:scale(.94)}
+.visual-wrap{text-align:center}
+.option-btn .listen-small{margin-top:9px;font-size:12px;padding:6px 9px;background:#f3efff}
+
+
+.feedback-overlay{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.82);backdrop-filter:blur(5px);z-index:50;
+  opacity:0;pointer-events:none;transition:opacity .18s
+}
+.feedback-overlay.show{opacity:1;pointer-events:auto}
+.feedback-symbol{
+  width:210px;height:210px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:135px;font-weight:900;line-height:1;
+  box-shadow:0 20px 50px rgba(50,40,100,.18);animation:feedbackPop .45s ease-out
+}
+.feedback-symbol.good{background:#dff9e7;color:#29b85a;border:8px solid #72d991}
+.feedback-symbol.bad{background:#ffe5e8;color:#e84d5c;border:8px solid #ff8d98}
+.feedback-text{position:absolute;margin-top:280px;font-size:31px;font-weight:900;color:var(--ink)}
+@keyframes feedbackPop{0%{transform:scale(.3) rotate(-12deg);opacity:0}70%{transform:scale(1.08) rotate(2deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+
 @media(max-width:720px){
  .app{padding:8px}.welcome{min-height:calc(100vh - 16px);padding:25px 20px 18px}.brand{font-size:34px}.name-pill{top:23px;right:18px;font-size:13px}.welcome h1{font-size:39px;margin-top:52px}.welcome .lead{font-size:18px}.hero{height:350px}.mascot{transform:scale(.82)}.bubble{right:0;top:30px;font-size:15px}.progress-row{grid-template-columns:1fr}.hero-card{min-height:170px}.dashboard{padding:0 16px 15px}.topbar{padding:18px 16px 6px}.greeting{font-size:31px}.grid{gap:8px}.tile{border-radius:19px}.tile .pic{height:67px;font-size:38px}.tile strong{font-size:14px}.nav button{font-size:11px}
 }
@@ -220,8 +243,12 @@ button{font:inherit;border:0;cursor:pointer}
 <section id="practice" class="screen phone practice">
   <button class="back" onclick="openDashboard()">← Menú</button>
   <h2 id="practiceTitle">Colores</h2>
-  <div id="practiceVisual" class="visual">🔴</div>
+  <div class="visual-wrap">
+    <div id="practiceVisual" class="visual">🔴</div>
+    <button class="listen-small" id="visualListen" onclick="speakVisual()">🔊 Escuchar</button>
+  </div>
   <div id="practiceQuestion" class="q"></div>
+  <button class="listen-small" onclick="repeatQuestion()">🔊 Escuchar pregunta otra vez</button>
   <div id="practiceStatus" class="status"></div>
   <div id="optionGrid" class="option-grid"></div>
   <div class="practice-buttons">
@@ -235,7 +262,7 @@ button{font:inherit;border:0;cursor:pointer}
 <section id="settings" class="screen phone practice">
   <button class="back" onclick="openDashboard()">← Inicio</button>
   <h2>Ajustes</h2>
-  <p>El nombre y la memoria personal de Cubito se conservan en este teléfono. Las actividades se responden hablando o tocando una de las dos opciones.</p>
+  <p>El nombre y la memoria personal de Cubito se conservan en este teléfono. Las actividades se responden hablando o tocando una de las dos opciones. En “¿Qué es esto?” Cubito enseña cada palabra en español y después en inglés.</p>
   <button class="practice-buttons danger" onclick="resetProgress()">🗑️ Reiniciar progreso educativo</button>
   <p style="color:#7770a1">Esto NO borra el nombre de Aurora ni la memoria personal.</p>
 </section>
@@ -247,52 +274,49 @@ let current=null,index=0,score=0,recognition=null, listening=false, answerLocked
 
 const sections={
 colores:{title:"Colores",icon:"🎨",bg:"pinkbg",items:[
- ["🔴","¿De qué color es este círculo?","rojo","azul",["🔴","ROJO"],["🔵","AZUL"]],
- ["🔵","¿De qué color es este círculo?","azul","rojo",["🔵","AZUL"],["🔴","ROJO"]],
- ["🟡","¿De qué color es este círculo?","amarillo","verde",["🟡","AMARILLO"],["🟢","VERDE"]],
- ["🟢","¿De qué color es este círculo?","verde","rojo",["🟢","VERDE"],["🔴","ROJO"]],
- ["🩷","¿De qué color es este círculo?","rosa","azul",["🩷","ROSA"],["🔵","AZUL"]]
+["🔴","¿De qué color es este círculo?","rojo","azul",["🔴","ROJO"],["🔵","AZUL"]],
+["🔵","¿De qué color es este círculo?","azul","rojo",["🔵","AZUL"],["🔴","ROJO"]],
+["🟡","¿De qué color es este círculo?","amarillo","verde",["🟡","AMARILLO"],["🟢","VERDE"]],
+["🟢","¿De qué color es este círculo?","verde","rojo",["🟢","VERDE"],["🔴","ROJO"]],
+["🩷","¿De qué color es este círculo?","rosa","azul",["🩷","ROSA"],["🔵","AZUL"]]
 ]},
 formas:{title:"Formas",icon:"🔷",bg:"bluebg",items:[
- ["🔺","¿Qué forma es esta?","triángulo","círculo",["🔺","TRIÁNGULO"],["⚪","CÍRCULO"]],
- ["⚪","¿Qué forma es esta?","círculo","cuadrado",["⚪","CÍRCULO"],["🟦","CUADRADO"]],
- ["🟦","¿Qué forma es esta?","cuadrado","triángulo",["🟦","CUADRADO"],["🔺","TRIÁNGULO"]],
- ["▭","¿Qué forma es esta?","rectángulo","círculo",["▭","RECTÁNGULO"],["⚪","CÍRCULO"]]
+["🔺","¿Qué forma es esta?","triángulo","círculo",["🔺","TRIÁNGULO"],["⚪","CÍRCULO"]],
+["⚪","¿Qué forma es esta?","círculo","cuadrado",["⚪","CÍRCULO"],["🟦","CUADRADO"]],
+["🟦","¿Qué forma es esta?","cuadrado","triángulo",["🟦","CUADRADO"],["🔺","TRIÁNGULO"]],
+["▭","¿Qué forma es esta?","rectángulo","círculo",["▭","RECTÁNGULO"],["⚪","CÍRCULO"]]
 ]},
 numeros:{title:"Números 0–9",icon:"🔢",bg:"greenbg",items:[
- ["0️⃣","¿Qué número es este?","cero","0","0️⃣","1️⃣"],["1️⃣","¿Qué número es este?","uno","1","1️⃣","2️⃣"],
- ["2️⃣","¿Qué número es este?","dos","2","2️⃣","3️⃣"],["3️⃣","¿Qué número es este?","tres","3","3️⃣","4️⃣"],
- ["4️⃣","¿Qué número es este?","cuatro","4","4️⃣","5️⃣"],["5️⃣","¿Qué número es este?","cinco","5","5️⃣","6️⃣"],
- ["6️⃣","¿Qué número es este?","seis","6","6️⃣","7️⃣"],["7️⃣","¿Qué número es este?","siete","7","7️⃣","8️⃣"],
- ["8️⃣","¿Qué número es este?","ocho","8","8️⃣","9️⃣"],["9️⃣","¿Qué número es este?","nueve","9","9️⃣","8️⃣"]
+["0️⃣","¿Qué número es este?","cero","uno",["0️⃣","CERO"],["1️⃣","UNO"]],
+["1️⃣","¿Qué número es este?","uno","dos",["1️⃣","UNO"],["2️⃣","DOS"]],
+["2️⃣","¿Qué número es este?","dos","tres",["2️⃣","DOS"],["3️⃣","TRES"]],
+["3️⃣","¿Qué número es este?","tres","cuatro",["3️⃣","TRES"],["4️⃣","CUATRO"]],
+["4️⃣","¿Qué número es este?","cuatro","cinco",["4️⃣","CUATRO"],["5️⃣","CINCO"]],
+["5️⃣","¿Qué número es este?","cinco","seis",["5️⃣","CINCO"],["6️⃣","SEIS"]],
+["6️⃣","¿Qué número es este?","seis","siete",["6️⃣","SEIS"],["7️⃣","SIETE"]],
+["7️⃣","¿Qué número es este?","siete","ocho",["7️⃣","SIETE"],["8️⃣","OCHO"]],
+["8️⃣","¿Qué número es este?","ocho","nueve",["8️⃣","OCHO"],["9️⃣","NUEVE"]],
+["9️⃣","¿Qué número es este?","nueve","ocho",["9️⃣","NUEVE"],["8️⃣","OCHO"]]
 ]},
 contar:{title:"Contar",icon:"🍎",bg:"yellowbg",items:[
- ["🍎🍎","¿Cuántas manzanas hay?","dos","2",["2️⃣","DOS"],["3️⃣","TRES"]],
- ["🍎🍎🍎","¿Cuántas manzanas hay?","tres","3",["3️⃣","TRES"],["2️⃣","DOS"]],
- ["⭐ ⭐ ⭐ ⭐","¿Cuántas estrellas hay?","cuatro","4",["4️⃣","CUATRO"],["5️⃣","CINCO"]],
- ["🐟 🐟 🐟 🐟 🐟","¿Cuántos peces hay?","cinco","5",["5️⃣","CINCO"],["4️⃣","CUATRO"]]
+["🍎🍎","¿Cuántas manzanas hay?","dos","tres",["2️⃣","DOS"],["3️⃣","TRES"]],
+["🍎🍎🍎","¿Cuántas manzanas hay?","tres","dos",["3️⃣","TRES"],["2️⃣","DOS"]],
+["⭐ ⭐ ⭐ ⭐","¿Cuántas estrellas hay?","cuatro","cinco",["4️⃣","CUATRO"],["5️⃣","CINCO"]],
+["🐟 🐟 🐟 🐟 🐟","¿Cuántos peces hay?","cinco","cuatro",["5️⃣","CINCO"],["4️⃣","CUATRO"]]
 ]},
 letras:{title:"Letras",icon:"🔤",bg:"purplebg",items:[
- ["🅰️","¿Qué letra es esta?","a",["🅰️","A"],["🅴","E"]],["🅴","¿Qué letra es esta?","e",["🅴","E"],["🅰️","A"]],
- ["🅸","¿Qué letra es esta?","i",["🅸","I"],["🅾️","O"]],["🅾️","¿Qué letra es esta?","o",["🅾️","O"],["🆄","U"]],
- ["🆄","¿Qué letra es esta?","u",["🆄","U"],["🅸","I"]]
+["🅰️","¿Qué letra es esta?","a","e",["🅰️","A"],["🅴","E"]],["🅴","¿Qué letra es esta?","e","a",["🅴","E"],["🅰️","A"]],
+["🅸","¿Qué letra es esta?","i","o",["🅸","I"],["🅾️","O"]],["🅾️","¿Qué letra es esta?","o","u",["🅾️","O"],["🆄","U"]],
+["🆄","¿Qué letra es esta?","u","i",["🆄","U"],["🅸","I"]]
 ]},
 animales:{title:"Animales",icon:"🐶",bg:"peachbg",items:[
- ["🐶","¿Qué animal es?","perro",["🐶","PERRO"],["🐱","GATO"]],["🐱","¿Qué animal es?","gato",["🐱","GATO"],["🐶","PERRO"]],
- ["🐮","¿Qué animal es?","vaca",["🐮","VACA"],["🐴","CABALLO"]],["🐱","¿Qué animal hace miau?","gato",["🐱","GATO"],["🐶","PERRO"]],
- ["🐶","¿Qué animal hace guau?","perro",["🐶","PERRO"],["🐱","GATO"]]
+["🐶","¿Qué animal es?","perro","gato",["🐶","PERRO"],["🐱","GATO"]],["🐱","¿Qué animal es?","gato","perro",["🐱","GATO"],["🐶","PERRO"]],
+["🐮","¿Qué animal es?","vaca","caballo",["🐮","VACA"],["🐴","CABALLO"]],["🐱","¿Qué animal hace miau?","gato","perro",["🐱","GATO"],["🐶","PERRO"]],
+["🐶","¿Qué animal hace guau?","perro","gato",["🐶","PERRO"],["🐱","GATO"]]
 ]},
-cuerpo:{title:"Cuerpo humano",icon:"🧒",bg:"lavbg",items:[
- ["👀","¿Con qué parte del cuerpo vemos?","ojos",["👀","OJOS"],["👂","OREJAS"]],
- ["👃","¿Con qué parte del cuerpo olemos?","nariz",["👃","NARIZ"],["👂","OREJAS"]],
- ["👂","¿Con qué parte del cuerpo escuchamos?","orejas","oídos","oidos",["👂","OREJAS"],["👀","OJOS"]],
- ["🦶","¿Qué usamos para caminar?","pies",["🦶","PIES"],["👀","OJOS"]]
-]},
-conceptos:{title:"Conceptos básicos",icon:"☀️",bg:"yellowbg",items:[
- ["🐘 🐭","¿Cuál es el animal grande?","elefante",["🐘","ELEFANTE"],["🐭","RATÓN"]],
- ["☀️\n🏠","¿Qué está arriba?","sol",["☀️","SOL"],["🏠","CASA"]],
- ["☀️\n🏠","¿Qué está abajo?","casa",["🏠","CASA"],["☀️","SOL"]]
-]}
+conceptos:{title:"Conceptos básicos",icon:"🧠",bg:"yellowbg",items:[["⬆️","¿Qué concepto es este?","Arriba up","Abajo down",["⬆️","Arriba"],["⬇️","Abajo"]],["⬇️","¿Qué concepto es este?","Abajo down","Cerca near",["⬇️","Abajo"],["↔️","Cerca"]],["↔️","¿Qué concepto es este?","Cerca near","Lejos far",["↔️","Cerca"],["🌳","Lejos"]],["🌳","¿Qué concepto es este?","Lejos far","Dentro inside",["🌳","Lejos"],["🔴","Dentro"]],["🔴","¿Qué concepto es este?","Dentro inside","Fuera outside",["🔴","Dentro"],["🚪","Fuera"]],["🚪","¿Qué concepto es este?","Fuera outside","Grande big",["🚪","Fuera"],["📦","Grande"]],["📦","¿Qué concepto es este?","Grande big","Pequeño small",["📦","Grande"],["🐜","Pequeño"]],["🐜","¿Qué concepto es este?","Pequeño small","Día day",["🐜","Pequeño"],["☀️","Día"]],["☀️","¿Qué concepto es este?","Día day","Noche night",["☀️","Día"],["🌙","Noche"]],["🌙","¿Qué concepto es este?","Noche night","Caliente hot",["🌙","Noche"],["🔥","Caliente"]],["🔥","¿Qué concepto es este?","Caliente hot","Frío cold",["🔥","Caliente"],["❄️","Frío"]],["❄️","¿Qué concepto es este?","Frío cold","Feliz happy",["❄️","Frío"],["😊","Feliz"]],["😊","¿Qué concepto es este?","Feliz happy","Triste sad",["😊","Feliz"],["😢","Triste"]],["😢","¿Qué concepto es este?","Triste sad","Lleno full",["😢","Triste"],["💧","Lleno"]],["💧","¿Qué concepto es este?","Lleno full","Arriba up",["💧","Lleno"],["⬆️","Arriba"]]]},
+cuerpo:{title:"Partes del cuerpo",icon:"🧒",bg:"lavbg",items:[["👀","¿Qué parte del cuerpo es esta?","Ojos","Orejas",["👀","Ojos"],["👂","Orejas"]],["👂","¿Qué parte del cuerpo es esta?","Orejas","Nariz",["👂","Orejas"],["👃","Nariz"]],["👃","¿Qué parte del cuerpo es esta?","Nariz","Boca",["👃","Nariz"],["👄","Boca"]],["👄","¿Qué parte del cuerpo es esta?","Boca","Dientes",["👄","Boca"],["🦷","Dientes"]],["🦷","¿Qué parte del cuerpo es esta?","Dientes","Lengua",["🦷","Dientes"],["👅","Lengua"]],["👅","¿Qué parte del cuerpo es esta?","Lengua","Cabello",["👅","Lengua"],["💇","Cabello"]],["💇","¿Qué parte del cuerpo es esta?","Cabello","Cerebro",["💇","Cabello"],["🧠","Cerebro"]],["🧠","¿Qué parte del cuerpo es esta?","Cerebro","Corazón",["🧠","Cerebro"],["❤️","Corazón"]],["❤️","¿Qué parte del cuerpo es esta?","Corazón","Brazo",["❤️","Corazón"],["💪","Brazo"]],["💪","¿Qué parte del cuerpo es esta?","Brazo","Mano",["💪","Brazo"],["✋","Mano"]],["✋","¿Qué parte del cuerpo es esta?","Mano","Pierna",["✋","Mano"],["🦵","Pierna"]],["🦵","¿Qué parte del cuerpo es esta?","Pierna","Pie",["🦵","Pierna"],["🦶","Pie"]],["🦶","¿Qué parte del cuerpo es esta?","Pie","Dedo",["🦶","Pie"],["👆","Dedo"]],["👆","¿Qué parte del cuerpo es esta?","Dedo","Rodilla",["👆","Dedo"],["🦴","Rodilla"]],["🦴","¿Qué parte del cuerpo es esta?","Rodilla","Ojos",["🦴","Rodilla"],["👀","Ojos"]]]},
+cosas:{title:"¿Qué es esto? / What is it?",icon:"🌎",bg:"bluebg",items:[["🚗","¿Qué es esto?","Carro","Autobús",["🚗","Carro"],["🚌","Autobús"],"car","bus"],["🚌","¿Qué es esto?","Autobús","Bicicleta",["🚌","Autobús"],["🚲","Bicicleta"],"bus","bicycle"],["🚲","¿Qué es esto?","Bicicleta","Casa",["🚲","Bicicleta"],["🏠","Casa"],"bicycle","house"],["🏠","¿Qué es esto?","Casa","Escuela",["🏠","Casa"],["🏫","Escuela"],"house","school"],["🏫","¿Qué es esto?","Escuela","Puerta",["🏫","Escuela"],["🚪","Puerta"],"school","door"],["🚪","¿Qué es esto?","Puerta","Ventana",["🚪","Puerta"],["🪟","Ventana"],"door","window"],["🪟","¿Qué es esto?","Ventana","Cama",["🪟","Ventana"],["🛏️","Cama"],"window","bed"],["🛏️","¿Qué es esto?","Cama","Silla",["🛏️","Cama"],["🪑","Silla"],"bed","chair"],["🪑","¿Qué es esto?","Silla","Sofá",["🪑","Silla"],["🛋️","Sofá"],"chair","sofa"],["🛋️","¿Qué es esto?","Sofá","Mesa",["🛋️","Sofá"],["🪟","Mesa"],"sofa","table"],["🪟","¿Qué es esto?","Mesa","Lámpara",["🪟","Mesa"],["💡","Lámpara"],"table","lamp"],["💡","¿Qué es esto?","Lámpara","Televisión",["💡","Lámpara"],["📺","Televisión"],"lamp","television"],["📺","¿Qué es esto?","Televisión","Teléfono",["📺","Televisión"],["📱","Teléfono"],"television","phone"],["📱","¿Qué es esto?","Teléfono","Computadora",["📱","Teléfono"],["💻","Computadora"],"phone","computer"],["💻","¿Qué es esto?","Computadora","Reloj",["💻","Computadora"],["⌚","Reloj"],"computer","clock"],["⌚","¿Qué es esto?","Reloj","Mochila",["⌚","Reloj"],["🎒","Mochila"],"clock","backpack"],["🎒","¿Qué es esto?","Mochila","Libro",["🎒","Mochila"],["📚","Libro"],"backpack","book"],["📚","¿Qué es esto?","Libro","Lápiz",["📚","Libro"],["✏️","Lápiz"],"book","pencil"],["✏️","¿Qué es esto?","Lápiz","Crayón",["✏️","Lápiz"],["🖍️","Crayón"],"pencil","crayon"],["🖍️","¿Qué es esto?","Crayón","Tijeras",["🖍️","Crayón"],["✂️","Tijeras"],"crayon","scissors"],["✂️","¿Qué es esto?","Tijeras","Regla",["✂️","Tijeras"],["📏","Regla"],"scissors","ruler"],["📏","¿Qué es esto?","Regla","Juguete",["📏","Regla"],["🧸","Juguete"],"ruler","toy"],["🧸","¿Qué es esto?","Juguete","Pelota",["🧸","Juguete"],["⚽","Pelota"],"toy","ball"],["⚽","¿Qué es esto?","Pelota","Cometa",["⚽","Pelota"],["🪁","Cometa"],"ball","kite"],["🪁","¿Qué es esto?","Cometa","Tren",["🪁","Cometa"],["🚂","Tren"],"kite","train"],["🚂","¿Qué es esto?","Tren","Avión",["🚂","Tren"],["✈️","Avión"],"train","airplane"],["✈️","¿Qué es esto?","Avión","Barco",["✈️","Avión"],["🚢","Barco"],"airplane","ship"],["🚢","¿Qué es esto?","Barco","Cohete",["🚢","Barco"],["🚀","Cohete"],"ship","rocket"],["🚀","¿Qué es esto?","Cohete","Semáforo",["🚀","Cohete"],["🚦","Semáforo"],"rocket","traffic light"],["🚦","¿Qué es esto?","Semáforo","Señal de alto",["🚦","Semáforo"],["🛑","Señal de alto"],"traffic light","stop sign"],["🛑","¿Qué es esto?","Señal de alto","Carrito",["🛑","Señal de alto"],["🛒","Carrito"],"stop sign","shopping cart"],["🛒","¿Qué es esto?","Carrito","Escoba",["🛒","Carrito"],["🧹","Escoba"],"shopping cart","broom"],["🧹","¿Qué es esto?","Escoba","Cubeta",["🧹","Escoba"],["🪣","Cubeta"],"broom","bucket"],["🪣","¿Qué es esto?","Cubeta","Jabón",["🪣","Cubeta"],["🧼","Jabón"],"bucket","soap"],["🧼","¿Qué es esto?","Jabón","Cepillo de dientes",["🧼","Jabón"],["🪥","Cepillo de dientes"],"soap","toothbrush"],["🪥","¿Qué es esto?","Cepillo de dientes","Champú",["🪥","Cepillo de dientes"],["🧴","Champú"],"toothbrush","shampoo"],["🧴","¿Qué es esto?","Champú","Papel",["🧴","Champú"],["🧻","Papel"],"shampoo","paper"],["🧻","¿Qué es esto?","Papel","Canasta",["🧻","Papel"],["🧺","Canasta"],"paper","basket"],["🧺","¿Qué es esto?","Canasta","Calcetín",["🧺","Canasta"],["🧦","Calcetín"],"basket","sock"],["🧦","¿Qué es esto?","Calcetín","Camisa",["🧦","Calcetín"],["👕","Camisa"],"sock","shirt"],["👕","¿Qué es esto?","Camisa","Pantalón",["👕","Camisa"],["👖","Pantalón"],"shirt","pants"],["👖","¿Qué es esto?","Pantalón","Zapato",["👖","Pantalón"],["👟","Zapato"],"pants","shoe"],["👟","¿Qué es esto?","Zapato","Gorra",["👟","Zapato"],["🧢","Gorra"],"shoe","cap"],["🧢","¿Qué es esto?","Gorra","Abrigo",["🧢","Gorra"],["🧥","Abrigo"],"cap","coat"],["🧥","¿Qué es esto?","Abrigo","Paraguas",["🧥","Abrigo"],["☂️","Paraguas"],"coat","umbrella"],["☂️","¿Qué es esto?","Paraguas","Sombrero",["☂️","Paraguas"],["🎩","Sombrero"],"umbrella","hat"],["🎩","¿Qué es esto?","Sombrero","Lentes",["🎩","Sombrero"],["👓","Lentes"],"hat","glasses"],["👓","¿Qué es esto?","Lentes","Biberón",["👓","Lentes"],["🍼","Biberón"],"glasses","bottle"],["🍼","¿Qué es esto?","Biberón","Cuchara",["🍼","Biberón"],["🥄","Cuchara"],"bottle","spoon"],["🥄","¿Qué es esto?","Cuchara","Tenedor",["🥄","Cuchara"],["🍴","Tenedor"],"spoon","fork"],["🍴","¿Qué es esto?","Tenedor","Plato",["🍴","Tenedor"],["🍽️","Plato"],"fork","plate"],["🍽️","¿Qué es esto?","Plato","Vaso",["🍽️","Plato"],["🥤","Vaso"],"plate","glass"],["🥤","¿Qué es esto?","Vaso","Manzana",["🥤","Vaso"],["🍎","Manzana"],"glass","apple"],["🍎","¿Qué es esto?","Manzana","Plátano",["🍎","Manzana"],["🍌","Plátano"],"apple","banana"],["🍌","¿Qué es esto?","Plátano","Naranja",["🍌","Plátano"],["🍊","Naranja"],"banana","orange"],["🍊","¿Qué es esto?","Naranja","Fresa",["🍊","Naranja"],["🍓","Fresa"],"orange","strawberry"],["🍓","¿Qué es esto?","Fresa","Sandía",["🍓","Fresa"],["🍉","Sandía"],"strawberry","watermelon"],["🍉","¿Qué es esto?","Sandía","Zanahoria",["🍉","Sandía"],["🥕","Zanahoria"],"watermelon","carrot"],["🥕","¿Qué es esto?","Zanahoria","Maíz",["🥕","Zanahoria"],["🌽","Maíz"],"carrot","corn"],["🌽","¿Qué es esto?","Maíz","Leche",["🌽","Maíz"],["🥛","Leche"],"corn","milk"],["🥛","¿Qué es esto?","Leche","Queso",["🥛","Leche"],["🧀","Queso"],"milk","cheese"],["🧀","¿Qué es esto?","Queso","Pan",["🧀","Queso"],["🍞","Pan"],"cheese","bread"],["🍞","¿Qué es esto?","Pan","Huevo",["🍞","Pan"],["🥚","Huevo"],"bread","egg"],["🥚","¿Qué es esto?","Huevo","Pastel",["🥚","Huevo"],["🍰","Pastel"],"egg","cake"],["🍰","¿Qué es esto?","Pastel","Galleta",["🍰","Pastel"],["🍪","Galleta"],"cake","cookie"],["🍪","¿Qué es esto?","Galleta","Helado",["🍪","Galleta"],["🍦","Helado"],"cookie","ice cream"],["🍦","¿Qué es esto?","Helado","Agua",["🍦","Helado"],["💧","Agua"],"ice cream","water"],["💧","¿Qué es esto?","Agua","Árbol",["💧","Agua"],["🌳","Árbol"],"water","tree"],["🌳","¿Qué es esto?","Árbol","Flor",["🌳","Árbol"],["🌸","Flor"],"tree","flower"],["🌸","¿Qué es esto?","Flor","Planta",["🌸","Flor"],["🌱","Planta"],"flower","plant"],["🌱","¿Qué es esto?","Planta","Sol",["🌱","Planta"],["☀️","Sol"],"plant","sun"],["☀️","¿Qué es esto?","Sol","Luna",["☀️","Sol"],["🌙","Luna"],"sun","moon"],["🌙","¿Qué es esto?","Luna","Estrella",["🌙","Luna"],["⭐","Estrella"],"moon","star"],["⭐","¿Qué es esto?","Estrella","Nube",["⭐","Estrella"],["☁️","Nube"],"star","cloud"],["☁️","¿Qué es esto?","Nube","Arcoíris",["☁️","Nube"],["🌈","Arcoíris"],"cloud","rainbow"],["🌈","¿Qué es esto?","Arcoíris","Lluvia",["🌈","Arcoíris"],["🌧️","Lluvia"],"rainbow","rain"],["🌧️","¿Qué es esto?","Lluvia","Nieve",["🌧️","Lluvia"],["❄️","Nieve"],"rain","snow"],["❄️","¿Qué es esto?","Nieve","Fuego",["❄️","Nieve"],["🔥","Fuego"],"snow","fire"],["🔥","¿Qué es esto?","Fuego","Perro",["🔥","Fuego"],["🐶","Perro"],"fire","dog"],["🐶","¿Qué es esto?","Perro","Gato",["🐶","Perro"],["🐱","Gato"],"dog","cat"],["🐱","¿Qué es esto?","Gato","Ratón",["🐱","Gato"],["🐭","Ratón"],"cat","mouse"],["🐭","¿Qué es esto?","Ratón","Conejo",["🐭","Ratón"],["🐰","Conejo"],"mouse","rabbit"],["🐰","¿Qué es esto?","Conejo","Zorro",["🐰","Conejo"],["🦊","Zorro"],"rabbit","fox"],["🦊","¿Qué es esto?","Zorro","Oso",["🦊","Zorro"],["🐻","Oso"],"fox","bear"],["🐻","¿Qué es esto?","Oso","Panda",["🐻","Oso"],["🐼","Panda"],"bear","panda"],["🐼","¿Qué es esto?","Panda","Koala",["🐼","Panda"],["🐨","Koala"],"panda","koala"],["🐨","¿Qué es esto?","Koala","Tigre",["🐨","Koala"],["🐯","Tigre"],"koala","tiger"],["🐯","¿Qué es esto?","Tigre","León",["🐯","Tigre"],["🦁","León"],"tiger","lion"],["🦁","¿Qué es esto?","León","Vaca",["🦁","León"],["🐮","Vaca"],"lion","cow"],["🐮","¿Qué es esto?","Vaca","Cerdo",["🐮","Vaca"],["🐷","Cerdo"],"cow","pig"],["🐷","¿Qué es esto?","Cerdo","Rana",["🐷","Cerdo"],["🐸","Rana"],"pig","frog"],["🐸","¿Qué es esto?","Rana","Mono",["🐸","Rana"],["🐵","Mono"],"frog","monkey"],["🐵","¿Qué es esto?","Mono","Gallina",["🐵","Mono"],["🐔","Gallina"],"monkey","hen"],["🐔","¿Qué es esto?","Gallina","Pato",["🐔","Gallina"],["🦆","Pato"],"hen","duck"],["🦆","¿Qué es esto?","Pato","Pájaro",["🦆","Pato"],["🐦","Pájaro"],"duck","bird"],["🐦","¿Qué es esto?","Pájaro","Pez",["🐦","Pájaro"],["🐟","Pez"],"bird","fish"],["🐟","¿Qué es esto?","Pez","Delfín",["🐟","Pez"],["🐬","Delfín"],"fish","dolphin"],["🐬","¿Qué es esto?","Delfín","Tortuga",["🐬","Delfín"],["🐢","Tortuga"],"dolphin","turtle"],["🐢","¿Qué es esto?","Tortuga","Mariposa",["🐢","Tortuga"],["🦋","Mariposa"],"turtle","butterfly"],["🦋","¿Qué es esto?","Mariposa","Carro",["🦋","Mariposa"],["🚗","Carro"],"butterfly","car"]]}
 };
 
 function norm(x){return x.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[¿?¡!.,]/g,"").trim()}
@@ -335,21 +359,31 @@ function showQuestion(){
 function renderOptions(item){
  const grid=document.getElementById("optionGrid"); grid.innerHTML="";
  let opts=[];
- // Formato nuevo: item[2] = correcta; item[3] puede ser incorrecta;
- // item[4] e item[5] son las opciones visuales. Para letras/números/animales
- // las opciones ya vienen como arreglos.
  if(Array.isArray(item[3])) opts=[item[3],item[4]];
  else opts=[item[4],item[5]];
- // En números hay strings simples en item[4]/item[5], así que normalizamos.
  opts=opts.map(o=>Array.isArray(o)?o:[String(o),String(o)]);
- // Aleatoriza izquierda/derecha.
  if(Math.random()>.5) opts.reverse();
+
  opts.forEach(o=>{
    const b=document.createElement("button"); b.className="option-btn";
-   b.innerHTML=`<span class="opt-emoji">${o[0]}</span><span>${o[1]}</span>`;
-   b.onclick=()=>checkAnswer(o[1]);
+   const label=o[1];
+   const englishLabel = current==="cosas" ? ((o[1]===item[2]) ? item[6] : item[7]) : "";
+   b.innerHTML=`<span class="opt-emoji">${o[0]}</span><span>${label}</span><span class="listen-small">🔊 ${current==="cosas" ? "Escuchar "+label+" / "+englishLabel : "Escuchar “"+label+"”"}</span>`;
+   b.onclick=(e)=>{if(e.target.closest(".listen-small"))return;checkAnswer(label)};
+   b.querySelector(".listen-small").onclick=(e)=>{
+     e.stopPropagation();
+     if(current==="cosas"){
+       const english=(label===item[2])?item[6]:item[7];
+       speak(`${label}. ${english}`);
+     }else speak(label);
+   };
    grid.appendChild(b);
  });
+}
+function speakVisual(){
+ const item=sections[current].items[index];
+ const names={"🔴":"rojo","🔵":"azul","🟡":"amarillo","🟢":"verde","🩷":"rosa","🔺":"triángulo","⚪":"círculo","🟦":"cuadrado","▭":"rectángulo","0️⃣":"cero","1️⃣":"uno","2️⃣":"dos","3️⃣":"tres","4️⃣":"cuatro","5️⃣":"cinco","6️⃣":"seis","7️⃣":"siete","8️⃣":"ocho","9️⃣":"nueve","🅰️":"a","🅴":"e","🅸":"i","🅾️":"o","🆄":"u","🐶":"perro","🐱":"gato","🐮":"vaca","👀":"ojos","👃":"nariz","👂":"orejas","🦶":"pies"};
+ speak(names[item[0]]||item[1]);
 }
 function listen(){
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -363,36 +397,76 @@ function listen(){
  recognition.onend=()=>{listening=false};
  try{recognition.start()}catch(e){listening=false}
 }
+function showFeedback(ok){
+ const overlay=document.getElementById("feedbackOverlay");
+ const symbol=document.getElementById("feedbackSymbol");
+ const msg=document.getElementById("feedbackText");
+ symbol.className="feedback-symbol "+(ok?"good":"bad");
+ symbol.textContent=ok?"✓":"✕";
+ msg.textContent=ok?"¡Bien hecho!":"¡Ups! Inténtalo otra vez";
+ overlay.classList.add("show");
+ overlay.setAttribute("aria-hidden","false");
+ setTimeout(()=>{
+   overlay.classList.remove("show");
+   overlay.setAttribute("aria-hidden","true");
+ },1100);
+}
 function checkAnswer(raw){
  if(answerLocked)return;
- const a=norm(String(raw)),item=sections[current].items[index];
- if(["reinicia","reiniciar","otra vez","repite","repetir"].includes(a)){repeatQuestion();return}
- if(["siguiente","pasar","salta","saltar"].includes(a)){nextQuestion();return}
+
+ const a=norm(String(raw));
+ const item=sections[current].items[index];
+
+ if(["reinicia","reiniciar","otra vez","repite","repetir"].includes(a)){
+   repeatQuestion();
+   return;
+ }
+ if(["siguiente","pasar","salta","saltar"].includes(a)){
+   nextQuestion();
+   return;
+ }
+
  clearTimeout(questionTimer);
- if(recognition)try{recognition.abort()}catch(e){}
+ if(recognition){try{recognition.abort()}catch(e){}}
  listening=false;
 
- const ok=norm(item[2])===a || a.includes(norm(item[2])) || norm(item[2]).includes(a);
+ const correct=norm(item[2]);
+ const ok=(a===correct || a.includes(correct) || correct.includes(a));
  const buttons=[...document.querySelectorAll(".option-btn")];
- if(buttons.length){
-   buttons.forEach(b=>{
-     const label=norm(b.innerText);
-     if(label===norm(item[2]) || label.includes(norm(item[2]))) b.classList.add(ok?"correct-choice":"");
-   });
- }
+
  if(ok){
-   answerLocked=true;score++;
+   answerLocked=true;
+   score++;
+   showFeedback(true);
+
    progress[current]=Math.max(Number(progress[current]||0),index+1);
    localStorage.setItem("cubito_progreso",JSON.stringify(progress));
-   document.getElementById("practiceStatus").textContent="✅ ¡Correcto!";
-   speak(`¡Muy bien, ${childName}! ¡Correcto!`);
-   setTimeout(nextQuestion,1300);
+
+   document.getElementById("practiceStatus").textContent="✅ ¡Bien hecho!";
+   if(current==="cosas"){
+     const english=item[6]||"";
+     speak(`¡Bien hecho, ${childName}! ${item[2]}. ${english}.`);
+   }else{
+     speak(`¡Bien hecho, ${childName}! La respuesta es ${item[2]}.`);
+   }
+
+   setTimeout(nextQuestion,1500);
  }else{
    answerLocked=true;
-   buttons.forEach(b=>{if(norm(b.innerText).includes(a))b.classList.add("wrong-choice")});
+   showFeedback(false);
+
+   buttons.forEach(b=>{
+     const label=norm(b.innerText);
+     if(label.includes(a)) b.classList.add("wrong-choice");
+   });
+
    document.getElementById("practiceStatus").textContent="❌ No es correcto. Inténtalo otra vez.";
    speak(`No es correcto, ${childName}. Inténtalo otra vez.`);
-   setTimeout(()=>{answerLocked=false;showQuestion()},1700);
+
+   setTimeout(()=>{
+     answerLocked=false;
+     showQuestion();
+   },1800);
  }
 }
 function repeatQuestion(){
@@ -412,5 +486,9 @@ function resetProgress(){if(confirm(`¿Borrar el progreso educativo de ${childNa
 document.getElementById("welcomeName").textContent=childName;document.getElementById("welcomeName2").textContent=childName;document.getElementById("dashName").textContent=childName;
 buildGrid();updateDashboard();
 </script>
+<div id="feedbackOverlay" class="feedback-overlay" aria-hidden="true">
+  <div id="feedbackSymbol" class="feedback-symbol good">✓</div>
+  <div id="feedbackText" class="feedback-text">¡Bien hecho!</div>
+</div>
 </body>
 </html>
