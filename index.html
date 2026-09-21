@@ -78,7 +78,7 @@ button{font:inherit;border:0;cursor:pointer}
 .nav{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;background:#fff;padding:10px 12px 14px;border-radius:28px 28px 0 0;box-shadow:0 -8px 25px #5e589b10}
 .nav button{background:transparent;color:#7c78a0;padding:9px 4px;border-radius:18px;font-size:12px;font-weight:800}.nav button.active{background:#fff4d5;color:#e7a928}
 .practice{padding:24px}.back{background:#eeeefe;color:var(--ink);padding:10px 14px;border-radius:15px;font-weight:800}
-.practice h2{font-size:30px}.visual{font-size:90px;min-height:145px;display:grid;place-items:center}.q{font-size:23px;font-weight:900;text-align:center;min-height:60px}.status{text-align:center;min-height:32px;font-weight:900}.practice-buttons{text-align:center}.practice-buttons button{padding:14px 18px;border-radius:16px;margin:4px;background:var(--ink);color:#fff;font-weight:900}.practice-buttons .pink{background:var(--pink);color:#fff}.practice-buttons .light{background:#eee;color:var(--ink)}.text-answer{display:flex;gap:8px;max-width:620px;margin:12px auto 0}.text-answer input{flex:1;min-width:0;padding:14px 16px;border:2px solid #e5e4f3;border-radius:16px;font:inherit;color:var(--ink);outline:none;background:#fff}.text-answer input:focus{border-color:#c8b8f7}.text-answer button{padding:14px 16px;border-radius:16px;background:#ffc94f;color:#fff;font-weight:900}
+.practice h2{font-size:30px}.visual{font-size:90px;min-height:145px;display:grid;place-items:center}.q{font-size:23px;font-weight:900;text-align:center;min-height:60px}.q-en{display:block;font-size:18px;color:#716c99;margin-top:5px}.status{text-align:center;min-height:32px;font-weight:900}.practice-buttons{text-align:center}.practice-buttons button{padding:14px 18px;border-radius:16px;margin:4px;background:var(--ink);color:#fff;font-weight:900}.practice-buttons .pink{background:var(--pink);color:#fff}.practice-buttons .light{background:#eee;color:var(--ink)}.text-answer{display:flex;gap:8px;max-width:620px;margin:12px auto 0}.text-answer input{flex:1;min-width:0;padding:14px 16px;border:2px solid #e5e4f3;border-radius:16px;font:inherit;color:var(--ink);outline:none;background:#fff}.text-answer input:focus{border-color:#c8b8f7}.text-answer button{padding:14px 16px;border-radius:16px;background:#ffc94f;color:#fff;font-weight:900}
 .danger{background:#fff0f0!important;color:#a34a4a!important}
 .hidden{display:none!important}
 
@@ -344,16 +344,60 @@ cuerpo:{title:"Partes del cuerpo",icon:"🧒",bg:"lavbg",items:[["👀","¿Qué 
 cosas:{title:"¿Qué es esto? / What is it?",icon:"🌎",bg:"bluebg",items:[["🚗","¿Qué es esto?","Carro","Autobús",["🚗","Carro"],["🚌","Autobús"],"car","bus"],["🚌","¿Qué es esto?","Autobús","Bicicleta",["🚌","Autobús"],["🚲","Bicicleta"],"bus","bicycle"],["🚲","¿Qué es esto?","Bicicleta","Casa",["🚲","Bicicleta"],["🏠","Casa"],"bicycle","house"],["🏠","¿Qué es esto?","Casa","Escuela",["🏠","Casa"],["🏫","Escuela"],"house","school"],["🏫","¿Qué es esto?","Escuela","Puerta",["🏫","Escuela"],["🚪","Puerta"],"school","door"],["🚪","¿Qué es esto?","Puerta","Ventana",["🚪","Puerta"],["🪟","Ventana"],"door","window"],["🪟","¿Qué es esto?","Ventana","Cama",["🪟","Ventana"],["🛏️","Cama"],"window","bed"],["🛏️","¿Qué es esto?","Cama","Silla",["🛏️","Cama"],["🪑","Silla"],"bed","chair"],["🪑","¿Qué es esto?","Silla","Sofá",["🪑","Silla"],["🛋️","Sofá"],"chair","sofa"],["🛋️","¿Qué es esto?","Sofá","Mesa",["🛋️","Sofá"],["🪟","Mesa"],"sofa","table"],["🪟","¿Qué es esto?","Mesa","Lámpara",["🪟","Mesa"],["💡","Lámpara"],"table","lamp"],["💡","¿Qué es esto?","Lámpara","Televisión",["💡","Lámpara"],["📺","Televisión"],"lamp","television"],["📺","¿Qué es esto?","Televisión","Teléfono",["📺","Televisión"],["📱","Teléfono"],"television","phone"],["📱","¿Qué es esto?","Teléfono","Computadora",["📱","Teléfono"],["💻","Computadora"],"phone","computer"],["💻","¿Qué es esto?","Computadora","Reloj",["💻","Computadora"],["⌚","Reloj"],"computer","clock"],["⌚","¿Qué es esto?","Reloj","Mochila",["⌚","Reloj"],["🎒","Mochila"],"clock","backpack"],["🎒","¿Qué es esto?","Mochila","Libro",["🎒","Mochila"],["📚","Libro"],"backpack","book"],["📚","¿Qué es esto?","Libro","Lápiz",["📚","Libro"],["✏️","Lápiz"],"book","pencil"],["✏️","¿Qué es esto?","Lápiz","Crayón",["✏️","Lápiz"],["🖍️","Crayón"],"pencil","crayon"],["🖍️","¿Qué es esto?","Crayón","Tijeras",["🖍️","Crayón"],["✂️","Tijeras"],"crayon","scissors"],["✂️","¿Qué es esto?","Tijeras","Regla",["✂️","Tijeras"],["📏","Regla"],"scissors","ruler"],["📏","¿Qué es esto?","Regla","Juguete",["📏","Regla"],["🧸","Juguete"],"ruler","toy"],["🧸","¿Qué es esto?","Juguete","Pelota",["🧸","Juguete"],["⚽","Pelota"],"toy","ball"],["⚽","¿Qué es esto?","Pelota","Cometa",["⚽","Pelota"],["🪁","Cometa"],"ball","kite"],["🪁","¿Qué es esto?","Cometa","Tren",["🪁","Cometa"],["🚂","Tren"],"kite","train"],["🚂","¿Qué es esto?","Tren","Avión",["🚂","Tren"],["✈️","Avión"],"train","airplane"],["✈️","¿Qué es esto?","Avión","Barco",["✈️","Avión"],["🚢","Barco"],"airplane","ship"],["🚢","¿Qué es esto?","Barco","Cohete",["🚢","Barco"],["🚀","Cohete"],"ship","rocket"],["🚀","¿Qué es esto?","Cohete","Semáforo",["🚀","Cohete"],["🚦","Semáforo"],"rocket","traffic light"],["🚦","¿Qué es esto?","Semáforo","Señal de alto",["🚦","Semáforo"],["🛑","Señal de alto"],"traffic light","stop sign"],["🛑","¿Qué es esto?","Señal de alto","Carrito",["🛑","Señal de alto"],["🛒","Carrito"],"stop sign","shopping cart"],["🛒","¿Qué es esto?","Carrito","Escoba",["🛒","Carrito"],["🧹","Escoba"],"shopping cart","broom"],["🧹","¿Qué es esto?","Escoba","Cubeta",["🧹","Escoba"],["🪣","Cubeta"],"broom","bucket"],["🪣","¿Qué es esto?","Cubeta","Jabón",["🪣","Cubeta"],["🧼","Jabón"],"bucket","soap"],["🧼","¿Qué es esto?","Jabón","Cepillo de dientes",["🧼","Jabón"],["🪥","Cepillo de dientes"],"soap","toothbrush"],["🪥","¿Qué es esto?","Cepillo de dientes","Champú",["🪥","Cepillo de dientes"],["🧴","Champú"],"toothbrush","shampoo"],["🧴","¿Qué es esto?","Champú","Papel",["🧴","Champú"],["🧻","Papel"],"shampoo","paper"],["🧻","¿Qué es esto?","Papel","Canasta",["🧻","Papel"],["🧺","Canasta"],"paper","basket"],["🧺","¿Qué es esto?","Canasta","Calcetín",["🧺","Canasta"],["🧦","Calcetín"],"basket","sock"],["🧦","¿Qué es esto?","Calcetín","Camisa",["🧦","Calcetín"],["👕","Camisa"],"sock","shirt"],["👕","¿Qué es esto?","Camisa","Pantalón",["👕","Camisa"],["👖","Pantalón"],"shirt","pants"],["👖","¿Qué es esto?","Pantalón","Zapato",["👖","Pantalón"],["👟","Zapato"],"pants","shoe"],["👟","¿Qué es esto?","Zapato","Gorra",["👟","Zapato"],["🧢","Gorra"],"shoe","cap"],["🧢","¿Qué es esto?","Gorra","Abrigo",["🧢","Gorra"],["🧥","Abrigo"],"cap","coat"],["🧥","¿Qué es esto?","Abrigo","Paraguas",["🧥","Abrigo"],["☂️","Paraguas"],"coat","umbrella"],["☂️","¿Qué es esto?","Paraguas","Sombrero",["☂️","Paraguas"],["🎩","Sombrero"],"umbrella","hat"],["🎩","¿Qué es esto?","Sombrero","Lentes",["🎩","Sombrero"],["👓","Lentes"],"hat","glasses"],["👓","¿Qué es esto?","Lentes","Biberón",["👓","Lentes"],["🍼","Biberón"],"glasses","bottle"],["🍼","¿Qué es esto?","Biberón","Cuchara",["🍼","Biberón"],["🥄","Cuchara"],"bottle","spoon"],["🥄","¿Qué es esto?","Cuchara","Tenedor",["🥄","Cuchara"],["🍴","Tenedor"],"spoon","fork"],["🍴","¿Qué es esto?","Tenedor","Plato",["🍴","Tenedor"],["🍽️","Plato"],"fork","plate"],["🍽️","¿Qué es esto?","Plato","Vaso",["🍽️","Plato"],["🥤","Vaso"],"plate","glass"],["🥤","¿Qué es esto?","Vaso","Manzana",["🥤","Vaso"],["🍎","Manzana"],"glass","apple"],["🍎","¿Qué es esto?","Manzana","Plátano",["🍎","Manzana"],["🍌","Plátano"],"apple","banana"],["🍌","¿Qué es esto?","Plátano","Naranja",["🍌","Plátano"],["🍊","Naranja"],"banana","orange"],["🍊","¿Qué es esto?","Naranja","Fresa",["🍊","Naranja"],["🍓","Fresa"],"orange","strawberry"],["🍓","¿Qué es esto?","Fresa","Sandía",["🍓","Fresa"],["🍉","Sandía"],"strawberry","watermelon"],["🍉","¿Qué es esto?","Sandía","Zanahoria",["🍉","Sandía"],["🥕","Zanahoria"],"watermelon","carrot"],["🥕","¿Qué es esto?","Zanahoria","Maíz",["🥕","Zanahoria"],["🌽","Maíz"],"carrot","corn"],["🌽","¿Qué es esto?","Maíz","Leche",["🌽","Maíz"],["🥛","Leche"],"corn","milk"],["🥛","¿Qué es esto?","Leche","Queso",["🥛","Leche"],["🧀","Queso"],"milk","cheese"],["🧀","¿Qué es esto?","Queso","Pan",["🧀","Queso"],["🍞","Pan"],"cheese","bread"],["🍞","¿Qué es esto?","Pan","Huevo",["🍞","Pan"],["🥚","Huevo"],"bread","egg"],["🥚","¿Qué es esto?","Huevo","Pastel",["🥚","Huevo"],["🍰","Pastel"],"egg","cake"],["🍰","¿Qué es esto?","Pastel","Galleta",["🍰","Pastel"],["🍪","Galleta"],"cake","cookie"],["🍪","¿Qué es esto?","Galleta","Helado",["🍪","Galleta"],["🍦","Helado"],"cookie","ice cream"],["🍦","¿Qué es esto?","Helado","Agua",["🍦","Helado"],["💧","Agua"],"ice cream","water"],["💧","¿Qué es esto?","Agua","Árbol",["💧","Agua"],["🌳","Árbol"],"water","tree"],["🌳","¿Qué es esto?","Árbol","Flor",["🌳","Árbol"],["🌸","Flor"],"tree","flower"],["🌸","¿Qué es esto?","Flor","Planta",["🌸","Flor"],["🌱","Planta"],"flower","plant"],["🌱","¿Qué es esto?","Planta","Sol",["🌱","Planta"],["☀️","Sol"],"plant","sun"],["☀️","¿Qué es esto?","Sol","Luna",["☀️","Sol"],["🌙","Luna"],"sun","moon"],["🌙","¿Qué es esto?","Luna","Estrella",["🌙","Luna"],["⭐","Estrella"],"moon","star"],["⭐","¿Qué es esto?","Estrella","Nube",["⭐","Estrella"],["☁️","Nube"],"star","cloud"],["☁️","¿Qué es esto?","Nube","Arcoíris",["☁️","Nube"],["🌈","Arcoíris"],"cloud","rainbow"],["🌈","¿Qué es esto?","Arcoíris","Lluvia",["🌈","Arcoíris"],["🌧️","Lluvia"],"rainbow","rain"],["🌧️","¿Qué es esto?","Lluvia","Nieve",["🌧️","Lluvia"],["❄️","Nieve"],"rain","snow"],["❄️","¿Qué es esto?","Nieve","Fuego",["❄️","Nieve"],["🔥","Fuego"],"snow","fire"],["🔥","¿Qué es esto?","Fuego","Perro",["🔥","Fuego"],["🐶","Perro"],"fire","dog"],["🐶","¿Qué es esto?","Perro","Gato",["🐶","Perro"],["🐱","Gato"],"dog","cat"],["🐱","¿Qué es esto?","Gato","Ratón",["🐱","Gato"],["🐭","Ratón"],"cat","mouse"],["🐭","¿Qué es esto?","Ratón","Conejo",["🐭","Ratón"],["🐰","Conejo"],"mouse","rabbit"],["🐰","¿Qué es esto?","Conejo","Zorro",["🐰","Conejo"],["🦊","Zorro"],"rabbit","fox"],["🦊","¿Qué es esto?","Zorro","Oso",["🦊","Zorro"],["🐻","Oso"],"fox","bear"],["🐻","¿Qué es esto?","Oso","Panda",["🐻","Oso"],["🐼","Panda"],"bear","panda"],["🐼","¿Qué es esto?","Panda","Koala",["🐼","Panda"],["🐨","Koala"],"panda","koala"],["🐨","¿Qué es esto?","Koala","Tigre",["🐨","Koala"],["🐯","Tigre"],"koala","tiger"],["🐯","¿Qué es esto?","Tigre","León",["🐯","Tigre"],["🦁","León"],"tiger","lion"],["🦁","¿Qué es esto?","León","Vaca",["🦁","León"],["🐮","Vaca"],"lion","cow"],["🐮","¿Qué es esto?","Vaca","Cerdo",["🐮","Vaca"],["🐷","Cerdo"],"cow","pig"],["🐷","¿Qué es esto?","Cerdo","Rana",["🐷","Cerdo"],["🐸","Rana"],"pig","frog"],["🐸","¿Qué es esto?","Rana","Mono",["🐸","Rana"],["🐵","Mono"],"frog","monkey"],["🐵","¿Qué es esto?","Mono","Gallina",["🐵","Mono"],["🐔","Gallina"],"monkey","hen"],["🐔","¿Qué es esto?","Gallina","Pato",["🐔","Gallina"],["🦆","Pato"],"hen","duck"],["🦆","¿Qué es esto?","Pato","Pájaro",["🦆","Pato"],["🐦","Pájaro"],"duck","bird"],["🐦","¿Qué es esto?","Pájaro","Pez",["🐦","Pájaro"],["🐟","Pez"],"bird","fish"],["🐟","¿Qué es esto?","Pez","Delfín",["🐟","Pez"],["🐬","Delfín"],"fish","dolphin"],["🐬","¿Qué es esto?","Delfín","Tortuga",["🐬","Delfín"],["🐢","Tortuga"],"dolphin","turtle"],["🐢","¿Qué es esto?","Tortuga","Mariposa",["🐢","Tortuga"],["🦋","Mariposa"],"turtle","butterfly"],["🦋","¿Qué es esto?","Mariposa","Carro",["🦋","Mariposa"],["🚗","Carro"],"butterfly","car"]]}
 };
 
-// Datos bilingües para conceptos y partes del cuerpo.
-const conceptEnglish={"Arriba":"up","Abajo":"down","Cerca":"near","Lejos":"far","Dentro":"inside","Fuera":"outside","Grande":"big","Pequeño":"small","Día":"day","Noche":"night","Caliente":"hot","Frío":"cold","Feliz":"happy","Triste":"sad","Lleno":"full"};
-const bodyEnglish={"Ojos":"eyes","Orejas":"ears","Nariz":"nose","Boca":"mouth","Dientes":"teeth","Lengua":"tongue","Cabello":"hair","Cerebro":"brain","Corazón":"heart","Brazo":"arm","Mano":"hand","Pierna":"leg","Pie":"foot","Dedo":"finger","Rodilla":"knee"};
-for(const item of sections.conceptos.items){ item[2]=item[2].split(" ")[0]; item[3]=item[3].split(" ")[0]; item.push(conceptEnglish[item[2]],conceptEnglish[item[3]]); }
-for(const item of sections.cuerpo.items){ item.push(bodyEnglish[item[2]],bodyEnglish[item[3]]); }
+// Datos bilingües: todas las actividades tienen español + inglés.
+const englishWords={
+  rojo:"red", azul:"blue", amarillo:"yellow", verde:"green", rosa:"pink",
+  triángulo:"triangle", círculo:"circle", cuadrado:"square", rectángulo:"rectangle",
+  cero:"zero", uno:"one", dos:"two", tres:"three", cuatro:"four", cinco:"five", seis:"six", siete:"seven", ocho:"eight", nueve:"nine",
+  a:"A", e:"E", i:"I", o:"O", u:"U",
+  perro:"dog", gato:"cat", vaca:"cow", caballo:"horse",
+  arriba:"up", abajo:"down", cerca:"near", lejos:"far", dentro:"inside", fuera:"outside", grande:"big", pequeño:"small", día:"day", noche:"night", caliente:"hot", frío:"cold", feliz:"happy", triste:"sad", lleno:"full",
+  ojos:"eyes", orejas:"ears", nariz:"nose", boca:"mouth", dientes:"teeth", lengua:"tongue", cabello:"hair", cerebro:"brain", corazón:"heart", brazo:"arm", mano:"hand", pierna:"leg", pie:"foot", dedo:"finger", rodilla:"knee"
+};
+
+// Las 100 cosas ya traen su inglés en las posiciones 6 y 7.
+// A las demás secciones se les agrega automáticamente.
+for(const [id,sec] of Object.entries(sections)){
+  if(id==="cosas") continue;
+  for(const item of sec.items){
+    const es1=String(item[2]).split(" ")[0];
+    const es2=Array.isArray(item[3]) ? String(item[3][1]).split(" ")[0] : String(item[3]).split(" ")[0];
+    item[6]=englishWords[es1.toLowerCase()] || es1;
+    item[7]=englishWords[es2.toLowerCase()] || es2;
+    item[2]=es1;
+    if(Array.isArray(item[3])) item[3][1]=es2;
+    else if(Array.isArray(item[4])) item[4][1]=es1;
+    if(Array.isArray(item[5])) item[5][1]=es2;
+  }
+}
+
+const questionEnglish={
+  colores:"What color is this circle?",
+  formas:"What shape is this?",
+  numeros:"What number is this?",
+  contar:"How many are there?",
+  letras:"What letter is this?",
+  animales:"What animal is it?",
+  conceptos:"What concept is this?",
+  cuerpo:"What body part is this?",
+  cosas:"What is this?"
+};
 
 function norm(x){return x.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[¿?¡!.,]/g,"").trim()}
-function speak(text){
+function speak(text, lang="es-MX"){
  const m=document.getElementById("mascotWelcome"); if(m)m.classList.add("talking");
- speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text);u.lang="es-MX";u.rate=.92;u.onend=()=>{if(m)m.classList.remove("talking")};speechSynthesis.speak(u);
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);u.lang=lang;u.rate=.92;
+ u.onend=()=>{if(m)m.classList.remove("talking")};
+ speechSynthesis.speak(u);
+}
+function speakBilingual(es,en){
+ const m=document.getElementById("mascotWelcome"); if(m)m.classList.add("talking");
+ speechSynthesis.cancel();
+ const a=new SpeechSynthesisUtterance(es);a.lang="es-MX";a.rate=.92;
+ const b=new SpeechSynthesisUtterance(en);b.lang="en-US";b.rate=.9;
+ b.onend=()=>{if(m)m.classList.remove("talking")};
+ speechSynthesis.speak(a);speechSynthesis.speak(b);
 }
 function openDashboard(){hideAll();document.getElementById("dashboard").classList.add("active");updateDashboard();speak(`¡Hola ${childName}! ¿Qué quieres aprender hoy?`)}
 function backWelcome(){hideAll();document.getElementById("welcome").classList.add("active")}
@@ -383,29 +427,22 @@ function showQuestion(){
  const visualName=document.getElementById("visualName");
  const visualListen=document.getElementById("visualListen");
  visual.innerHTML=item[0].replace(/\n/g,"<br>");
- visualName.innerHTML="";
- visualCard.classList.remove("clickable");
- visualCard.onclick=null;
+ visualName.innerHTML=`${item[2]}<small>${item[6]||""}</small>`;
+ visualCard.classList.add("clickable");
+ visualCard.onclick=(e)=>{if(e.target.closest("#visualListen")) return; speakVisual();};
  visualListen.textContent="🔊 Escuchar qué es";
 
- if(current==="cosas"){
-   visualCard.classList.add("clickable");
-   visualCard.onclick=(e)=>{
-     if(e.target.closest("#visualListen")) return;
-     speakVisual();
-   };
-   visualName.innerHTML=`${item[2]}<small>${item[6]}</small>`;
-   visualListen.textContent="🔊 ¿Qué es esto?";
- }
-
- document.getElementById("practiceQuestion").textContent=item[1];
+ const qEs=item[1];
+ const qEn=questionEnglish[current]||"What is this?";
+ document.getElementById("practiceQuestion").innerHTML=`${qEs}<span class="q-en">${qEn}</span>`;
  document.getElementById("practiceStatus").textContent="";
  document.getElementById("activityNumber").textContent=(index+1)+" de "+sections[current].items.length;
  renderOptions(item);
- speak(current==="cosas" ? `${item[1]} Di español o inglés.` : item[1]);
+ speakBilingual(`${qEs} Di español o inglés.`, `${qEn} Say it in Spanish or English.`);
  // Solo se abre el micrófono después de que Cubito termina de hablar.
- setTimeout(()=>{if(!answerLocked) listen()},1300);
+ setTimeout(()=>{if(!answerLocked) listen()},1500);
 }
+
 function renderOptions(item){
  const grid=document.getElementById("optionGrid"); grid.innerHTML="";
  let opts=[];
@@ -417,61 +454,63 @@ function renderOptions(item){
  opts.forEach(o=>{
    const b=document.createElement("button"); b.className="option-btn";
    const label=o[1];
-   let englishLabel="";
-   if(current==="cosas" || current==="conceptos" || current==="cuerpo") englishLabel=(label===item[2])?item[6]:item[7];
-   const bilingual=(current==="cosas" || current==="conceptos" || current==="cuerpo");
-   b.innerHTML=`<span class="opt-emoji">${o[0]}</span><span class="option-label">${label}</span>${bilingual?`<span class="option-english">${englishLabel}</span>`:""}<span class="listen-small">🔊 Escuchar</span>`;
+   const englishLabel=(label===item[2])?item[6]:item[7];
+   b.innerHTML=`<span class="opt-emoji">${o[0]}</span><span class="option-label">${label}</span><span class="option-english">${englishLabel}</span><span class="listen-small">🔊 Escuchar</span>`;
    b.onclick=(e)=>{if(e.target.closest(".listen-small"))return;checkAnswer(label)};
    b.querySelector(".listen-small").onclick=(e)=>{
      e.stopPropagation();
-     if(current==="cosas" || current==="conceptos" || current==="cuerpo") speak(`${label}. ${englishLabel}`);
-     else speak(label);
+     speakBilingual(label,englishLabel);
    };
    grid.appendChild(b);
  });
 }
 function speakVisual(){
  const item=sections[current].items[index];
- if(current==="cosas"){
-   speak(`${item[2]}. ${item[6]}.`);
-   return;
- }
- const names={"🔴":"rojo","🔵":"azul","🟡":"amarillo","🟢":"verde","🩷":"rosa","🔺":"triángulo","⚪":"círculo","🟦":"cuadrado","▭":"rectángulo","0️⃣":"cero","1️⃣":"uno","2️⃣":"dos","3️⃣":"tres","4️⃣":"cuatro","5️⃣":"cinco","6️⃣":"seis","7️⃣":"siete","8️⃣":"ocho","9️⃣":"nueve","🅰️":"a","🅴":"e","🅸":"i","🅾️":"o","🆄":"u","🐶":"perro","🐱":"gato","🐮":"vaca","👀":"ojos","👃":"nariz","👂":"orejas","🦶":"pies"};
- speak(names[item[0]]||item[1]);
+ speakBilingual(item[2], item[6]||item[2]);
 }
+function answerMatches(raw){
+ const item=sections[current].items[index];
+ const correct=norm(item[2]);
+ const english=norm(item[6]||"");
+ const spokenParts=String(raw).split("|").map(norm).filter(Boolean);
+ const candidates=[norm(String(raw)),...spokenParts];
+ return candidates.some(v=>v===correct || v.includes(correct) || correct.includes(v) || (english && (v===english || v.includes(english) || english.includes(v))));
+}
+
 function listen(){
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
  if(!SR){document.getElementById("practiceStatus").textContent="🎤 Usa Chrome para responder con voz o toca una opción.";return}
  if(listening||answerLocked)return;
  if(recognition)try{recognition.abort()}catch(e){}
+ startVoiceRecognition(SR,"es-MX",true);
+}
+function startVoiceRecognition(SR,lang,allowEnglishFallback=false){
+ if(answerLocked)return;
  recognition=new SR();
- recognition.lang=current==="cosas" ? "es-MX" : "es-MX";
- recognition.interimResults=false; recognition.continuous=false; recognition.maxAlternatives=3;
- recognition.onstart=()=>{listening=true;document.getElementById("practiceStatus").textContent=current==="cosas"?"🎤 Te escucho… di la respuesta en español o inglés.":"🎤 Te escucho… di una de las dos opciones."};
+ recognition.lang=lang;
+ recognition.interimResults=false; recognition.continuous=false; recognition.maxAlternatives=5;
+ recognition.onstart=()=>{listening=true;document.getElementById("practiceStatus").textContent=`🎤 Te escucho… puedes decirlo en español o inglés.`};
  recognition.onresult=e=>{
    listening=false;
    const heard=[];
    for(let i=0;i<e.results[0].length;i++) heard.push(e.results[0][i].transcript);
-   checkAnswer(heard.join(" | "));
+   const phrase=heard.join(" | ");
+   if(answerMatches(phrase)) checkAnswer(phrase);
+   else if(allowEnglishFallback){
+     setTimeout(()=>startVoiceRecognition(SR,"en-US",false),120);
+   }else checkAnswer(phrase);
  };
- recognition.onerror=e=>{listening=false;if(e.error!=="aborted"&&!answerLocked)document.getElementById("practiceStatus").textContent="Puedes decir la respuesta o tocar una opción."};
+ recognition.onerror=e=>{
+   listening=false;
+   if(e.error!=="aborted"&&!answerLocked){
+     if(allowEnglishFallback) setTimeout(()=>startVoiceRecognition(SR,"en-US",false),120);
+     else document.getElementById("practiceStatus").textContent="Puedes decir la respuesta o tocar una opción.";
+   }
+ };
  recognition.onend=()=>{listening=false};
  try{recognition.start()}catch(e){listening=false}
 }
-function showFeedback(ok){
- const overlay=document.getElementById("feedbackOverlay");
- const symbol=document.getElementById("feedbackSymbol");
- const msg=document.getElementById("feedbackText");
- symbol.className="feedback-symbol "+(ok?"good":"bad");
- symbol.textContent=ok?"✓":"✕";
- msg.textContent=ok?"¡Bien hecho!":"¡Ups! Inténtalo otra vez";
- overlay.classList.add("show");
- overlay.setAttribute("aria-hidden","false");
- setTimeout(()=>{
-   overlay.classList.remove("show");
-   overlay.setAttribute("aria-hidden","true");
- },1100);
-}
+
 function checkAnswer(raw){
  if(answerLocked)return;
 
@@ -491,11 +530,7 @@ function checkAnswer(raw){
  if(recognition){try{recognition.abort()}catch(e){}}
  listening=false;
 
- const correct=norm(item[2]);
- const english=(current==="cosas" || current==="conceptos" || current==="cuerpo") ? norm(item[6]||"") : "";
- const spokenParts=String(raw).split("|").map(norm).filter(Boolean);
- const candidates=[a,...spokenParts];
- const ok=candidates.some(v=>v===correct || v.includes(correct) || correct.includes(v) || (english && (v===english || v.includes(english) || english.includes(v))));
+ const ok=answerMatches(raw);
  const buttons=[...document.querySelectorAll(".option-btn")];
 
  if(ok){
@@ -507,12 +542,7 @@ function checkAnswer(raw){
    localStorage.setItem("cubito_progreso",JSON.stringify(progress));
 
    document.getElementById("practiceStatus").textContent="✅ ¡Bien hecho!";
-   if(current==="cosas" || current==="conceptos" || current==="cuerpo"){
-     const english=item[6]||"";
-     speak(`¡Bien hecho, ${childName}! ${item[2]}. ${english}.`);
-   }else{
-     speak(`¡Bien hecho, ${childName}! La respuesta es ${item[2]}.`);
-   }
+   speakBilingual(`¡Bien hecho, ${childName}! ${item[2]}.`, `Great job, ${childName}! ${item[6]||item[2]}.`);
 
    setTimeout(nextQuestion,1500);
  }else{
