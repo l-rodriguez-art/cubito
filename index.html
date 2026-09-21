@@ -177,7 +177,7 @@ button{font:inherit;border:0;cursor:pointer}
 <script>
 const childName=localStorage.getItem("cubito_nombre")||"Aurora";
 let progress=JSON.parse(localStorage.getItem("cubito_progreso")||"{}");
-let current=null,index=0,score=0,recognition=null;
+let current=null,index=0,score=0,recognition=null, listening=false, answerLocked=false;
 
 const sections={
 colores:{title:"Colores",icon:"🎨",bg:"pinkbg",items:[["🔴","¿De qué color es este círculo?","rojo"],["🔵","¿De qué color es este círculo?","azul"],["🟡","¿De qué color es este círculo?","amarillo"],["🟢","¿De qué color es este círculo?","verde"],["🩷","¿De qué color es este círculo?","rosa"]]},
@@ -214,28 +214,78 @@ function buildGrid(){
 }
 function startSection(id){current=id;index=0;score=0;hideAll();document.getElementById("practice").classList.add("active");document.getElementById("practiceTitle").textContent=sections[id].title;showQuestion()}
 function showQuestion(){
- const item=sections[current].items[index];document.getElementById("practiceVisual").innerHTML=item[0].replace(/\\n/g,"<br>");document.getElementById("practiceQuestion").textContent=item[1];document.getElementById("practiceStatus").textContent="";document.getElementById("activityNumber").textContent=(index+1)+" de "+sections[current].items.length;speak(item[1]);setTimeout(()=>listen(),1000)
+ if(recognition){try{recognition.abort()}catch(e){}}
+ listening=false; answerLocked=false;
+ const item=sections[current].items[index];
+ document.getElementById("practiceVisual").innerHTML=item[0].replace(/\\n/g,"<br>");
+ document.getElementById("practiceQuestion").textContent=item[1];
+ document.getElementById("practiceStatus").textContent="";
+ document.getElementById("activityNumber").textContent=(index+1)+" de "+sections[current].items.length;
+ speak(item[1]);
+ setTimeout(()=>listen(),1300);
 }
 function listen(){
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
  if(!SR){document.getElementById("practiceStatus").textContent="🎤 Usa Chrome para responder con voz.";return}
- if(recognition)try{recognition.abort()}catch(e){}
- recognition=new SR();recognition.lang="es-MX";recognition.interimResults=false;recognition.maxAlternatives=3;
- recognition.onstart=()=>document.getElementById("practiceStatus").textContent="🎤 Te escucho…";
- recognition.onresult=e=>checkAnswer(e.results[0][0].transcript);
- recognition.onerror=()=>document.getElementById("practiceStatus").textContent="No te escuché. Pulsa 🎤 otra vez.";
- try{recognition.start()}catch(e){}
+ if(listening || answerLocked) return;
+ if(recognition){try{recognition.abort()}catch(e){}}
+ recognition=new SR();
+ recognition.lang="es-MX";
+ recognition.interimResults=false;
+ recognition.continuous=false;
+ recognition.maxAlternatives=1;
+ recognition.onstart=()=>{
+   listening=true;
+   document.getElementById("practiceStatus").textContent="🎤 Te escucho…";
+ };
+ recognition.onresult=e=>{
+   listening=false;
+   if(!answerLocked) checkAnswer(e.results[0][0].transcript);
+ };
+ recognition.onerror=e=>{
+   listening=false;
+   if(e.error!=="aborted" && !answerLocked)
+     document.getElementById("practiceStatus").textContent="No te escuché. Pulsa 🎤 para intentarlo otra vez.";
+ };
+ recognition.onend=()=>{listening=false};
+ try{recognition.start()}catch(e){listening=false}
 }
 function checkAnswer(raw){
+ if(answerLocked) return;
  const a=norm(raw),item=sections[current].items[index];
  if(["reinicia","reiniciar","otra vez","repite","repetir"].includes(a)){repeatQuestion();return}
  if(["siguiente","pasar","salta","saltar"].includes(a)){nextQuestion();return}
  const ok=item.slice(2).map(norm).some(x=>a===x||a.includes(x));
- if(ok){score++;progress[current]=Math.max(Number(progress[current]||0),index+1);localStorage.setItem("cubito_progreso",JSON.stringify(progress));document.getElementById("practiceStatus").textContent="✅ ¡Correcto!";speak(`¡Muy bien, ${childName}! ¡Correcto!`);setTimeout(nextQuestion,1300)}
- else{document.getElementById("practiceStatus").textContent="❌ Inténtalo otra vez";speak(`Casi, ${childName}. Inténtalo otra vez.`)}
+
+ if(ok){
+   answerLocked=true;
+   score++;
+   progress[current]=Math.max(Number(progress[current]||0),index+1);
+   localStorage.setItem("cubito_progreso",JSON.stringify(progress));
+   document.getElementById("practiceStatus").textContent="✅ ¡Correcto!";
+   speak(`¡Muy bien, ${childName}! ¡Correcto!`);
+   setTimeout(nextQuestion,1500);
+ }else{
+   // Una respuesta incorrecta NO avanza ni vuelve a activar el micrófono
+   // inmediatamente. Cubito dice que está mal y repite automáticamente.
+   answerLocked=true;
+   document.getElementById("practiceStatus").textContent="❌ No es correcto. Vamos otra vez.";
+   speak(`No es correcto, ${childName}. Vamos a intentarlo otra vez.`);
+   setTimeout(()=>{
+     answerLocked=false;
+     showQuestion();
+   },1800);
+ }
 }
-function repeatQuestion(){showQuestion()}
-function nextQuestion(){if(index<sections[current].items.length-1){index++;showQuestion()}else{document.getElementById("practiceVisual").textContent="🎉";document.getElementById("practiceQuestion").textContent=`Terminaste ${sections[current].title}`;document.getElementById("practiceStatus").textContent=`⭐ ${score} aciertos en esta ronda`;speak(`¡Terminaste, ${childName}! Puedes volver a practicar cuando quieras.`)}}
+function repeatQuestion(){
+ if(recognition){try{recognition.abort()}catch(e){}}
+ listening=false; answerLocked=false;
+ showQuestion();
+}
+function nextQuestion(){
+ if(recognition){try{recognition.abort()}catch(e){}}
+ listening=false; answerLocked=false;
+ if(index<sections[current].items.length-1){index++;showQuestion()}else{document.getElementById("practiceVisual").textContent="🎉";document.getElementById("practiceQuestion").textContent=`Terminaste ${sections[current].title}`;document.getElementById("practiceStatus").textContent=`⭐ ${score} aciertos en esta ronda`;speak(`¡Terminaste, ${childName}! Puedes volver a practicar cuando quieras.`)}}
 function showSettings(){hideAll();document.getElementById("settings").classList.add("active")}
 function showProgress(){alert("⭐ Tu progreso se conserva en este teléfono.\\n\\nLas actividades pueden repetirse todas las veces que quieras.\\n\\nPara empezar de cero, entra a Ajustes y elige Reiniciar progreso.");}
 function resetProgress(){if(confirm(`¿Borrar el progreso educativo de ${childName}?\\n\\nSu nombre y memoria personal NO se borrarán.`)){progress={};localStorage.removeItem("cubito_progreso");updateDashboard();alert("✅ Progreso reiniciado. ¡A practicar otra vez!");openDashboard()}}
