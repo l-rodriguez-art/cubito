@@ -383,7 +383,7 @@ const questionEnglish={
   cosas:"What is this?"
 };
 
-function norm(x){return x.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[¿?¡!.,]/g,"").trim()}
+function norm(x){return x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[¿?¡!.,]/g,"").trim()}
 function speak(text, lang="es-MX"){
  const m=document.getElementById("mascotWelcome"); if(m)m.classList.add("talking");
  speechSynthesis.cancel();
@@ -509,6 +509,25 @@ function startVoiceRecognition(SR,lang,allowEnglishFallback=false){
  };
  recognition.onend=()=>{listening=false};
  try{recognition.start()}catch(e){listening=false}
+}
+
+function showFeedback(ok){
+ const overlay=document.getElementById("feedbackOverlay");
+ const symbol=document.getElementById("feedbackSymbol");
+ const text=document.getElementById("feedbackText");
+ if(!overlay||!symbol||!text)return;
+ symbol.className="feedback-symbol "+(ok?"good":"bad");
+ symbol.textContent=ok?"✓":"✕";
+ text.textContent=ok?"¡Bien hecho!":"¡Ups! Inténtalo otra vez";
+ overlay.classList.remove("show");
+ void overlay.offsetWidth;
+ overlay.classList.add("show");
+ overlay.setAttribute("aria-hidden","false");
+ clearTimeout(window.feedbackTimer);
+ window.feedbackTimer=setTimeout(()=>{
+   overlay.classList.remove("show");
+   overlay.setAttribute("aria-hidden","true");
+ },1300);
 }
 
 function checkAnswer(raw){
