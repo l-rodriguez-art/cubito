@@ -53,6 +53,9 @@ button{font:inherit;color:inherit;border:0;cursor:pointer} .app{max-width:760px;
   <div class="nav" id="nav"></div>
   <div id="home" class="section active">
     <div class="grid" id="menu"></div>
+    <button id="resetAll" style="display:block;width:100%;margin:18px 0 4px;background:#fff;border:2px solid #ffd0dc;color:#d94d72;border-radius:20px;padding:14px;font-weight:900;box-shadow:0 8px 20px #49368a12;">
+      🗑️ Reiniciar todo
+    </button>
   </div>
   <div id="practice" class="section">
     <div class="practice">
@@ -191,6 +194,13 @@ function renderSame(){
   });
   $("listenMain").onclick=()=>speak(current.item[0],current.item[1]);
 }
+$("resetAll").onclick=()=>{
+  const ok = confirm("¿Quieres reiniciar todo? Se borrará el nombre, los puntos y el progreso guardado en este teléfono.");
+  if(!ok) return;
+  localStorage.removeItem("cubito_name");
+  localStorage.removeItem("cubito_points");
+  location.reload();
+};
 $("saveName").onclick=()=>{
   const v=$("nameInput").value.trim();
   if(!v){$("nameInput").focus();return}
