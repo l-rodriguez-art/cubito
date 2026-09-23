@@ -1,17 +1,25 @@
 {
-  "name": "Cubito - Aprende jugando",
+  "name": "Cubito — Aprende jugando",
   "short_name": "Cubito",
+  "description": "Aplicación educativa bilingüe español-inglés.",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#f8f5ff",
-  "theme_color": "#7c4dff",
-  "description": "Aplicación educativa bilingüe español-inglés para aprender jugando.",
+  "theme_color": "#7b4be8",
   "icons": [
     {
-      "src": "icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

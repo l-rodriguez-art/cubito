@@ -1,16 +1,23 @@
-CUBITO — PAQUETE DESCARGABLE
+CUBITO — APLICACIÓN WEB INSTALABLE
 
-Archivos:
-- index.html       Aplicación principal.
-- icon.svg         Ícono de Cubito.
-- manifest.json    Configuración para instalar como app.
-- service-worker.js Funcionamiento PWA/caché.
+Todos los archivos deben quedar EN LA RAÍZ del repositorio, sin carpetas:
 
-Para GitHub Pages:
-1. Sube estos 4 archivos al mismo nivel del repositorio.
-2. Verifica que index.html esté en la raíz.
-3. Activa GitHub Pages.
-4. Abre la URL de GitHub Pages desde el navegador.
-5. Usa “Agregar a pantalla de inicio” / “Instalar aplicación”.
+index.html
+manifest.json
+service-worker.js
+icon.svg
+icon-192.png
+icon-512.png
 
-No necesitas subir una carpeta de iconos.
+INSTALAR EN ANDROID:
+1. Sube los 6 archivos a tu repositorio de GitHub, todos al mismo nivel.
+2. Abre GitHub Pages de tu repositorio.
+3. Abre la página desde Chrome/Brave.
+4. Espera unos segundos y abre el menú del navegador.
+5. Elige "Instalar aplicación" o "Agregar a pantalla de inicio" (el texto puede variar).
+6. Cubito aparecerá con su propio icono y se abrirá como aplicación.
+
+IMPORTANTE:
+- La instalación PWA necesita HTTPS; GitHub Pages ya usa HTTPS.
+- No abras index.html como archivo local (file://) para probar la instalación.
+- El contenido y el progreso se guardan localmente en el navegador/dispositivo.
